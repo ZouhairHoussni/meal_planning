@@ -16,8 +16,9 @@ def test_signup_creates_user_and_logs_them_in(client):
     )
 
     assert response.status_code == 302
-    assert response["Location"] == reverse("dashboard")
+    assert response["Location"] == reverse("household_onboarding")
     assert get_user_model().objects.filter(username="zouhair").exists()
 
-    dashboard = client.get(reverse("dashboard"))
-    assert dashboard.status_code == 200
+    onboarding = client.get(reverse("household_onboarding"))
+    assert onboarding.status_code == 200
+    assert "Set up your household" in onboarding.content.decode()

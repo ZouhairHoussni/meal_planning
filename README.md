@@ -2,7 +2,7 @@
 
 MealBudget is a budget-first weekly meal planning and grocery tracking web application for euro/metric households.
 
-This repository has the Django/PostgreSQL foundation plus an early compact product loop: signup, recipes with components, a draggable weekly planner, shopping items generated from planned recipes, manual grocery additions, a pantry page, and branded/admin-registered models.
+This repository has the Django/PostgreSQL foundation plus an early compact product loop: signup, household onboarding with a weekly EUR budget, recipes with components, a draggable weekly planner, shopping items generated from planned recipes, manual grocery additions, a pantry page, and branded/admin-registered models.
 
 ## Stack
 
@@ -47,11 +47,13 @@ This repository has the Django/PostgreSQL foundation plus an early compact produ
 ## Current Workflows
 
 - Sign up at `/accounts/signup/`.
+- Set up a single owned household and weekly budget at `/household/onboarding/`.
+- Edit household defaults and budget at `/household/settings/`.
 - Create recipes at `/recipes/new/`.
 - Drag recipes into breakfast, lunch, dinner or extra slots at `/planner/`.
 - View generated planned shopping items and add manual groceries at `/shopping/`.
 - Add or edit optional price, brand and store on shopping items.
-- See known shopping spend totals and missing-price counts on Shopping and Dashboard.
+- See known shopping spend totals, budget remaining, store spend and missing-price counts on Shopping and Dashboard.
 - Add pantry items at `/pantry/`.
 - Manage users, recipes, planner entries, pantry items and shopping items at `/admin/`.
 

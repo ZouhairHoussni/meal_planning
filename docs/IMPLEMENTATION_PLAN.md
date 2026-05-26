@@ -1,6 +1,6 @@
 # MealBudget Implementation Plan
 
-Status: Phase 0 implemented, plus an early compact recipe/planner/shopping slice requested by the user on 2026-05-25. The repository started as an initialized but otherwise empty Git repository.
+Status: Phase 0 implemented, plus an early compact recipe/planner/shopping slice requested by the user on 2026-05-25. Phase 1 household onboarding and weekly budget foundation implemented on 2026-05-26.
 
 ## Source Documents
 
@@ -86,10 +86,24 @@ Definition of done:
 - Budget and servings validation are covered by tests.
 - Empty dashboard reflects household budget and selected week.
 
-Partial status:
+Status:
 
 - Signup is implemented with Django's built-in `User` model.
-- Household onboarding and weekly budget are still not implemented.
+- Add a single owned `Household` per user.
+- Redirect signup to onboarding.
+- Redirect authenticated users without a household from dashboard to onboarding.
+- Store EUR weekly budget and default servings.
+- Show budget-aware dashboard totals using the existing shopping summary.
+- Add a small household settings page for editing budget and household defaults.
+
+Out of scope for this slice:
+
+- Multiple households.
+- Invitations or shared household membership.
+- Completed shopping history.
+- Pantry deduction.
+- Ingredient price catalogue.
+- True weekly shopping-list snapshots.
 
 ### Phase 2: Ingredients and Recipe Library
 

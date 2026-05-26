@@ -1,0 +1,22 @@
+{% extends "layouts/app_shell.html" %}
+
+{% block title %}Household settings - MealBudget{% endblock %}
+
+{% block content %}
+  <div class="max-w-3xl">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Household</p>
+    <h1 class="mt-2 text-3xl font-semibold text-text">Settings</h1>
+    <p class="mt-2 text-sm leading-6 text-text-muted">Tune your default servings and weekly EUR budget as your week changes.</p>
+
+    <form class="mt-8 rounded-2xl border border-border bg-surface p-6 shadow-soft" method="post">
+      {% csrf_token %}
+      <div class="space-y-5">
+        {% include "households/partials/household_form_fields.html" %}
+      </div>
+      <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+        <button class="min-h-11 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover" type="submit">Save settings</button>
+        <a class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-text" href="{% url 'dashboard' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

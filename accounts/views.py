@@ -12,6 +12,6 @@ def signup(request):
     if request.method == "POST" and form.is_valid():
         user = form.save()
         login(request, user)
-        return redirect("dashboard")
+        return redirect("household_onboarding")
 
     return render(request, "accounts/signup.html", {"form": form})

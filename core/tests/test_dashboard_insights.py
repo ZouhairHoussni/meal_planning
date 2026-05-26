@@ -6,11 +6,13 @@ from django.urls import reverse
 from planning.models import PlannedMeal
 from recipes.models import Recipe, RecipeComponent
 from shopping.models import ShoppingItem
+from households.models import Household
 
 
 @pytest.mark.django_db
 def test_dashboard_shows_insights_for_meals_components_and_stores(client, django_user_model):
     user = django_user_model.objects.create_user(username="insight-user", password="test-pass-123")
+    Household.objects.create(owner=user, name="Insight home", default_weekly_budget="80.00")
     pasta = Recipe.objects.create(owner=user, name="Pasta pesto")
     soup = Recipe.objects.create(owner=user, name="Soup")
     RecipeComponent.objects.create(recipe=pasta, name="Pasta", quantity="250", unit="g", brand="Barilla", store="Carrefour")
@@ -39,6 +41,7 @@ def test_dashboard_shows_insights_for_meals_components_and_stores(client, django
 @pytest.mark.django_db
 def test_dashboard_store_filter_limits_shopping_summary(client, django_user_model):
     user = django_user_model.objects.create_user(username="filter-user", password="test-pass-123")
+    Household.objects.create(owner=user, name="Filter home", default_weekly_budget="80.00")
     ShoppingItem.objects.create(owner=user, name="Pasta", quantity="500", unit="g", price="2.50", store="Carrefour")
     ShoppingItem.objects.create(owner=user, name="Carrot", quantity="300", unit="g", price="1.25", store="Market")
     client.force_login(user)

@@ -137,6 +137,22 @@ Reason: this gives useful feedback now without introducing a separate analytics 
 
 Impact: "budget by store" currently means known priced shopping-line spend by store. True weekly budget allocation, actual-vs-estimated variance and completed shopping history remain later Phase 5/6 work.
 
+### Household onboarding slice
+
+Decision: implement a single owned `Household` in the `households` app before pantry deduction or completed shopping history.
+
+Reason: the budget-first product loop needs a stable owner/budget context. This also gives new users a clearer first-run path after signup.
+
+Impact: existing authenticated users without a household will be routed to onboarding before using the dashboard. Existing owner-scoped recipe, planner, shopping and pantry data remains user-owned for now; moving those models to household scope is a later migration.
+
+### Weekly budget status
+
+Decision: in this slice, dashboard budget status compares the household's weekly EUR budget to the current known shopping-line spend.
+
+Reason: the app does not yet have completed shopping trips or immutable weekly list snapshots. Showing known spend against budget is useful now and honest enough if the UI labels it clearly.
+
+Impact: this is not yet actual weekly spend history. Phase 5/6 must replace this with list/trip snapshots once completed shopping is implemented.
+
 ## Proposed Decisions for Later Phases
 
 ### Ingredient estimates

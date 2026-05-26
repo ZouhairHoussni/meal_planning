@@ -8,18 +8,32 @@
       <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Dashboard</p>
       <h1 class="mt-2 text-3xl font-semibold tracking-normal text-text sm:text-4xl">This week</h1>
       <p class="mt-3 max-w-2xl text-sm leading-6 text-text-muted">Your budget-first meal planning workspace is ready for the first product slice.</p>
+      <p class="mt-1 text-sm font-semibold text-text">{{ household.name }}</p>
     </div>
-    <form class="hidden lg:block" method="post" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <button class="rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-text transition hover:border-primary" type="submit">Sign out</button>
-    </form>
+    <div class="hidden gap-3 lg:flex">
+      <a class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-text transition hover:border-primary" href="{% url 'household_settings' %}">Household settings</a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="min-h-11 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-text transition hover:border-primary" type="submit">Sign out</button>
+      </form>
+    </div>
   </div>
 
   <section class="mt-8 grid gap-4 md:grid-cols-3">
     <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Estimated</p>
-      <p class="money-value mt-3 text-3xl font-bold text-text">EUR {{ shopping_summary.total_price|floatformat:"2" }}</p>
-      <p class="mt-2 text-sm text-text-muted">{{ shopping_summary.priced_count }} priced item{{ shopping_summary.priced_count|pluralize }}{% if shopping_summary.missing_price_count %}, {{ shopping_summary.missing_price_count }} missing price{{ shopping_summary.missing_price_count|pluralize }}{% endif %}.</p>
+      <p class="text-sm font-medium text-text-muted">Weekly budget</p>
+      <p class="money-value mt-3 text-3xl font-bold text-text">EUR {{ budget_status.budget|floatformat:"2" }}</p>
+      <p class="mt-2 text-sm text-text-muted">
+        EUR {{ budget_status.known_spend|floatformat:"2" }} known spend.
+        {% if budget_status.is_over_budget %}
+          <span class="font-semibold text-danger">EUR {{ budget_status.display_delta|floatformat:"2" }} over</span>
+        {% else %}
+          <span class="font-semibold text-success">EUR {{ budget_status.remaining|floatformat:"2" }} left</span>
+        {% endif %}
+      </p>
+      <div class="mt-4 h-2 rounded-full bg-surface-muted">
+        <div class="h-2 rounded-full {% if budget_status.is_over_budget %}bg-danger{% else %}bg-primary{% endif %}" style="width: {{ budget_status.bar_percentage }}%"></div>
+      </div>
     </article>
     <article class="rounded-2xl border border-border bg-surface p-5">
       <p class="text-sm font-medium text-text-muted">Meals planned</p>

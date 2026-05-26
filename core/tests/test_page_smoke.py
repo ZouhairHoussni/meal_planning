@@ -1,6 +1,8 @@
 import pytest
 from django.urls import reverse
 
+from households.models import Household
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
@@ -44,6 +46,7 @@ def test_dashboard_shows_meal_and_shopping_summary(client, django_user_model):
     from shopping.models import ShoppingItem
 
     user = django_user_model.objects.create_user(username="dashboard-summary", password="test-pass-123")
+    Household.objects.create(owner=user, name="Summary home", default_weekly_budget="80.00")
     recipe = Recipe.objects.create(owner=user, name="Pasta")
     PlannedMeal.objects.create(owner=user, recipe=recipe, date="2026-05-25", meal_type=PlannedMeal.MealType.DINNER)
     ShoppingItem.objects.create(owner=user, name="Pasta", quantity="500", unit="g", price="1.50")
