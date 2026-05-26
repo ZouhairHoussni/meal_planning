@@ -169,6 +169,14 @@ Reason: supermarket APIs are fragmented, country/store-specific, often incomplet
 
 Impact: the next pricing slice should introduce a `PriceEstimate` or `PriceObservation` model populated from shopping entries. When users add a grocery item or generated planned item, the app can suggest or auto-fill the most recent matching price for that store/brand. Public/store APIs can be evaluated later as optional import sources.
 
+### Shopping phone UX
+
+Decision: the shopping page is designed as a phone-first checklist with large circular bought controls, sticky quick add, separated "still to buy" and "already in pantry" sections, and inline edit details.
+
+Reason: shopping happens one-handed in a store. The primary action must be tap-to-buy, while price/brand/store edits remain available without making every item feel like a dense spreadsheet row.
+
+Impact: shopping remains server-rendered and works without a JavaScript framework. Further polish should keep the same checklist mental model and avoid hiding the core buy/unbuy action behind menus.
+
 ## Proposed Decisions for Later Phases
 
 ### Ingredient estimates

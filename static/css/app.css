@@ -32,3 +32,99 @@ body {
   outline: 3px solid rgba(35, 99, 69, 0.35);
   outline-offset: 2px;
 }
+
+.shopping-hero {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(234, 247, 239, 0.92)),
+    var(--color-canvas);
+}
+
+.shopping-metric,
+.shopping-empty,
+.shopping-item {
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16px 35px rgba(23, 32, 25, 0.06);
+}
+
+.shopping-metric {
+  border-radius: 24px;
+  padding: 1rem;
+}
+
+.shopping-empty {
+  border-radius: 28px;
+  padding: 1.5rem;
+}
+
+.shopping-item {
+  border-radius: 28px;
+  padding: 1rem;
+}
+
+.shopping-item-done {
+  background: rgba(243, 244, 239, 0.78);
+  box-shadow: none;
+}
+
+.shopping-check {
+  display: grid;
+  min-height: 4rem;
+  min-width: 4rem;
+  place-items: center;
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.shopping-check:hover {
+  border-color: var(--color-primary);
+  transform: scale(1.02);
+}
+
+.shopping-check:active {
+  transform: scale(0.96);
+}
+
+.shopping-check-done {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  color: #fff;
+}
+
+.shopping-check-dot {
+  height: 1rem;
+  width: 1rem;
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+}
+
+.shopping-input {
+  min-height: 3rem;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  padding: 0.75rem 1rem;
+  color: var(--color-text);
+}
+
+.shopping-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.shopping-chip {
+  display: inline-flex;
+  min-height: 1.875rem;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}

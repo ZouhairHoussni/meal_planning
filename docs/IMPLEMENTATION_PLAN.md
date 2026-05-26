@@ -177,6 +177,7 @@ Partial status:
 - Purchased/unpurchased toggles exist.
 - Shopping items can store optional price, brand and store.
 - Shopping and dashboard now show known spend totals, priced item counts and missing-price counts.
+- The shopping page has a phone-first checklist UX with large tap targets, quick add, separated to-buy/done sections and inline item editing.
 - Actual prices, completed trips and immutable history are still pending.
 
 ### Phase 6: Dashboard and Insight Refinement

@@ -13,14 +13,23 @@ from .services import sync_planned_shopping_items
 def shopping_list(request):
     sync_planned_shopping_items(request.user)
     items = ShoppingItem.objects.filter(owner=request.user)
+    to_buy_items = [item for item in items if not item.purchased]
+    purchased_items = [item for item in items if item.purchased]
+    summary = shopping_summary_for_user(request.user)
+    progress_percent = 0
+    if summary.item_count:
+        progress_percent = int((summary.purchased_count / summary.item_count) * 100)
     return render(
         request,
         "shopping/shopping_list.html",
         {
             "items": items,
+            "to_buy_items": to_buy_items,
+            "purchased_items": purchased_items,
             "manual_form": ManualShoppingItemForm(),
             "unit_choices": ShoppingItem._meta.get_field("unit").choices,
-            "summary": shopping_summary_for_user(request.user),
+            "summary": summary,
+            "progress_percent": progress_percent,
         },
     )
 

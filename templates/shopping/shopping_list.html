@@ -3,109 +3,114 @@
 {% block title %}Shopping - MealBudget{% endblock %}
 
 {% block content %}
-  <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Shopping</p>
-      <h1 class="mt-2 text-3xl font-semibold text-text">Shopping list</h1>
-      <p class="mt-2 text-sm text-text-muted">Planned items are generated from meal components. Add prices, brand and store as you shop.</p>
-    </div>
-    <a class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-text" href="{% url 'planner' %}">Back to planner</a>
-  </div>
-
-  <form class="mt-8 rounded-2xl border border-border bg-surface p-5 shadow-soft" method="post" action="{% url 'shopping_add_manual' %}">
-    {% csrf_token %}
-    <h2 class="text-lg font-semibold text-text">Add grocery item</h2>
-    <div class="mt-4 grid gap-3 xl:grid-cols-[1.4fr_110px_110px_120px_1fr_1fr_auto] xl:items-end">
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Item</label>
-        <input class="mt-1 min-h-11 w-full rounded-xl border border-border px-4" name="{{ manual_form.name.html_name }}" placeholder="Coffee, apples, soap..." required>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Qty</label>
-        <input class="mt-1 min-h-11 w-full rounded-xl border border-border px-4" name="{{ manual_form.quantity.html_name }}" placeholder="1" inputmode="decimal" required>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Unit</label>
-        <select class="mt-1 min-h-11 w-full rounded-xl border border-border px-3" name="{{ manual_form.unit.html_name }}">
-          {% for value, label in manual_form.unit.field.choices %}
-            <option value="{{ value }}">{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Price</label>
-        <input class="mt-1 min-h-11 w-full rounded-xl border border-border px-4" name="{{ manual_form.price.html_name }}" placeholder="EUR" inputmode="decimal">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Brand</label>
-        <input class="mt-1 min-h-11 w-full rounded-xl border border-border px-4" name="{{ manual_form.brand.html_name }}" placeholder="Optional">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Store</label>
-        <input class="mt-1 min-h-11 w-full rounded-xl border border-border px-4" name="{{ manual_form.store.html_name }}" placeholder="Optional">
-      </div>
-      <button class="min-h-11 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover" type="submit">Add grocery item</button>
-    </div>
-  </form>
-
-  <section class="mt-6 grid gap-4 md:grid-cols-3">
-    <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Known spend</p>
-      <p class="money-value mt-2 text-3xl font-bold text-text">EUR {{ summary.total_price|floatformat:"2" }}</p>
-    </article>
-    <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Prices entered</p>
-      <p class="mt-2 text-3xl font-bold text-text">{{ summary.priced_count }} priced</p>
-      <p class="mt-1 text-sm text-text-muted">{{ summary.missing_price_count }} missing price</p>
-    </article>
-    <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Progress</p>
-      <p class="mt-2 text-3xl font-bold text-text">{{ summary.purchased_count }}/{{ summary.item_count }}</p>
-      <p class="mt-1 text-sm text-text-muted">items marked done</p>
-    </article>
-  </section>
-
-  <section class="mt-6 space-y-3">
-    {% for item in items %}
-      <article class="rounded-2xl border border-border bg-surface p-4 shadow-soft">
-        <div class="flex items-center gap-3">
-          <form method="post" action="{% url 'shopping_toggle' item.id %}">
-            {% csrf_token %}
-            <button class="grid min-h-11 min-w-16 place-items-center rounded-xl border border-border px-3 text-xs font-bold {% if item.purchased %}bg-success text-white{% else %}bg-canvas text-text{% endif %}" type="submit" aria-label="Toggle {{ item.name }}">
-              {% if item.purchased %}Done{% else %}To buy{% endif %}
-            </button>
-          </form>
-          <div class="min-w-0 flex-1">
-            <p class="font-semibold text-text {% if item.purchased %}line-through text-text-muted{% endif %}">{{ item.name }}</p>
-            <p class="text-sm text-text-muted">
-              {{ item.quantity|floatformat:"-2" }} {{ item.unit }} - {{ item.get_source_display }}
-              {% if item.price %} - EUR {{ item.price }}{% endif %}
-              {% if item.brand %} - {{ item.brand }}{% endif %}
-              {% if item.store %} - {{ item.store }}{% endif %}
-            </p>
-          </div>
+  <div class="mx-auto max-w-5xl">
+    <section class="shopping-hero -mx-4 px-4 pb-5 pt-2 sm:mx-0 sm:rounded-[2rem] sm:px-6 sm:pt-6">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Shop mode</p>
+          <h1 class="mt-2 text-3xl font-semibold tracking-normal text-text sm:text-4xl">Shopping list</h1>
+          <p class="mt-2 max-w-2xl text-sm leading-6 text-text-muted">Tap items as you buy them. Bought groceries move into pantry automatically.</p>
         </div>
+        <a class="inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-white/90 px-5 py-3 text-sm font-semibold text-text shadow-sm transition hover:border-primary hover:text-primary" href="{% url 'planner' %}">Back to planner</a>
+      </div>
 
-        <form class="mt-4 grid gap-3 lg:grid-cols-[1.4fr_110px_110px_120px_1fr_1fr_auto]" method="post" action="{% url 'shopping_update' item.id %}">
-          {% csrf_token %}
-          <input class="min-h-11 rounded-xl border border-border px-3" name="name" value="{{ item.name }}" required>
-          <input class="min-h-11 rounded-xl border border-border px-3" name="quantity" value="{{ item.quantity|floatformat:'-2' }}" inputmode="decimal" required>
-          <select class="min-h-11 rounded-xl border border-border px-3" name="unit">
-            {% for value, label in unit_choices %}
-              <option value="{{ value }}" {% if item.unit == value %}selected{% endif %}>{{ label }}</option>
+      <div class="mt-6 grid gap-3 sm:grid-cols-3">
+        <article class="shopping-metric">
+          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Known spend</p>
+          <p class="money-value mt-2 text-3xl font-bold text-text">EUR {{ summary.total_price|floatformat:"2" }}</p>
+        </article>
+        <article class="shopping-metric">
+          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Progress</p>
+          <p class="mt-2 text-3xl font-bold text-text">{{ summary.purchased_count }}/{{ summary.item_count }}</p>
+          <div class="mt-3 h-2 rounded-full bg-white">
+            <div class="h-2 rounded-full bg-primary" style="width: {{ progress_percent }}%"></div>
+          </div>
+        </article>
+        <article class="shopping-metric">
+          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">Prices</p>
+          <p class="mt-2 text-3xl font-bold text-text">{{ summary.priced_count }}</p>
+          <p class="mt-1 text-sm text-text-muted">{{ summary.priced_count }} priced, {{ summary.missing_price_count }} missing</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="sticky top-0 z-10 -mx-4 border-y border-border bg-canvas/95 px-4 py-3 backdrop-blur sm:top-3 sm:mx-0 sm:mt-5 sm:rounded-3xl sm:border">
+      <form class="grid gap-3 md:grid-cols-[1.4fr_90px_100px_110px_1fr_1fr_auto] md:items-end" method="post" action="{% url 'shopping_add_manual' %}">
+        {% csrf_token %}
+        <div class="md:col-span-7">
+          <h2 class="text-base font-semibold text-text">Quick add</h2>
+        </div>
+        <div>
+          <label class="sr-only">Item</label>
+          <input class="shopping-input" name="{{ manual_form.name.html_name }}" placeholder="Add item..." required>
+        </div>
+        <div>
+          <label class="sr-only">Quantity</label>
+          <input class="shopping-input" name="{{ manual_form.quantity.html_name }}" placeholder="Qty" inputmode="decimal" required>
+        </div>
+        <div>
+          <label class="sr-only">Unit</label>
+          <select class="shopping-input" name="{{ manual_form.unit.html_name }}">
+            {% for value, label in manual_form.unit.field.choices %}
+              <option value="{{ value }}">{{ label }}</option>
             {% endfor %}
           </select>
-          <input class="min-h-11 rounded-xl border border-border px-3" name="price" value="{{ item.price|default_if_none:'' }}" placeholder="Price">
-          <input class="min-h-11 rounded-xl border border-border px-3" name="brand" value="{{ item.brand }}" placeholder="Brand">
-          <input class="min-h-11 rounded-xl border border-border px-3" name="store" value="{{ item.store }}" placeholder="Store">
-          <button class="min-h-11 rounded-xl border border-border bg-surface px-4 py-2 text-sm font-semibold text-text hover:border-primary hover:text-primary" type="submit">Save</button>
-        </form>
-      </article>
-    {% empty %}
-      <div class="rounded-2xl border border-border bg-surface p-6">
-        <h2 class="text-xl font-semibold text-text">Nothing to buy yet</h2>
-        <p class="mt-2 text-sm text-text-muted">Plan a meal or add a manual item above.</p>
+        </div>
+        <div>
+          <label class="sr-only">Price</label>
+          <input class="shopping-input" name="{{ manual_form.price.html_name }}" placeholder="EUR" inputmode="decimal">
+        </div>
+        <div>
+          <label class="sr-only">Brand</label>
+          <input class="shopping-input" name="{{ manual_form.brand.html_name }}" placeholder="Brand">
+        </div>
+        <div>
+          <label class="sr-only">Store</label>
+          <input class="shopping-input" name="{{ manual_form.store.html_name }}" placeholder="Store">
+        </div>
+        <button class="min-h-12 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover" type="submit">Add</button>
+      </form>
+    </section>
+
+    <section class="mt-6">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Still to buy</p>
+          <h2 class="mt-1 text-2xl font-semibold text-text">{{ to_buy_items|length }} item{{ to_buy_items|length|pluralize }}</h2>
+        </div>
+        <p class="hidden text-sm text-text-muted sm:block">Large tap targets for one-handed shopping.</p>
       </div>
-    {% endfor %}
-  </section>
+
+      <div class="mt-4 space-y-3">
+        {% for item in to_buy_items %}
+          {% include "shopping/partials/shopping_item_card.html" with item=item is_done=False %}
+        {% empty %}
+          <div class="shopping-empty">
+            <h3 class="text-xl font-semibold text-text">All clear</h3>
+            <p class="mt-2 text-sm text-text-muted">Add a grocery above or plan a recipe to generate your next list.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="mt-8 pb-8">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-success">Already in pantry</p>
+          <h2 class="mt-1 text-2xl font-semibold text-text">{{ purchased_items|length }} item{{ purchased_items|length|pluralize }}</h2>
+        </div>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        {% for item in purchased_items %}
+          {% include "shopping/partials/shopping_item_card.html" with item=item is_done=True %}
+        {% empty %}
+          <div class="shopping-empty">
+            <h3 class="text-xl font-semibold text-text">Nothing bought yet</h3>
+            <p class="mt-2 text-sm text-text-muted">Tap a grocery when it lands in the basket.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
 {% endblock %}
