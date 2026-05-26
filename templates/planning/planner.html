@@ -1,0 +1,84 @@
+{% extends "layouts/app_shell.html" %}
+{% load static %}
+
+{% block title %}Planner - MealBudget{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col gap-4 xl:flex-row xl:items-start">
+    <aside class="xl:sticky xl:top-6 xl:w-72">
+      <div class="rounded-2xl border border-border bg-surface p-5 shadow-soft">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Planner</p>
+            <h1 class="mt-2 text-2xl font-semibold text-text">Drag recipes</h1>
+          </div>
+          <a class="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white" href="{% url 'recipe_new' %}">New</a>
+        </div>
+        <p class="mt-3 text-sm text-text-muted">Drag a recipe card into breakfast, lunch, dinner or extra. You can also use the add form below.</p>
+        <div class="mt-5 space-y-3" id="recipe-bank">
+          {% for recipe in recipes %}
+            <div draggable="true" data-recipe-id="{{ recipe.id }}" class="cursor-grab rounded-xl border border-border bg-canvas p-3 shadow-sm active:cursor-grabbing">
+              <p class="font-semibold text-text">{{ recipe.name }}</p>
+              <p class="mt-1 text-xs text-text-muted">{{ recipe.components.count }} components</p>
+            </div>
+          {% empty %}
+            <p class="rounded-xl border border-border bg-canvas p-3 text-sm text-text-muted">Create a recipe first.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <form class="mt-4 rounded-2xl border border-border bg-surface p-5 shadow-soft" method="post" action="{% url 'planner_add' %}">
+        {% csrf_token %}
+        <h2 class="text-lg font-semibold text-text">Add without dragging</h2>
+        <div class="mt-4 space-y-3">
+          {{ form.recipe }}
+          {{ form.date }}
+          {{ form.meal_type }}
+          <input class="min-h-11 w-full rounded-xl border border-border px-3" name="{{ form.note.html_name }}" placeholder="Optional note">
+          <button class="min-h-11 w-full rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover" type="submit">Add meal</button>
+        </div>
+      </form>
+    </aside>
+
+    <section class="min-w-0 flex-1">
+      <div class="grid gap-4 lg:grid-cols-7">
+        {% for day in week_rows %}
+          <article class="rounded-2xl border border-border bg-surface p-4 shadow-soft">
+            <h2 class="text-sm font-semibold text-text">{{ day.date|date:"D d M" }}</h2>
+            <div class="mt-4 space-y-3">
+              {% for slot in day.slots %}
+                <div class="planner-drop rounded-xl border border-dashed border-border bg-canvas p-3" data-date="{{ day.date|date:'Y-m-d' }}" data-meal-type="{{ slot.type }}">
+                  <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">{{ slot.label }}</p>
+                  <form class="planner-drop-form" method="post" action="{% url 'planner_add' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="date" value="{{ day.date|date:'Y-m-d' }}">
+                    <input type="hidden" name="meal_type" value="{{ slot.type }}">
+                    <input type="hidden" name="recipe" value="">
+                  </form>
+                  <div class="mt-2 space-y-2">
+                    {% for meal in slot.meals %}
+                      <div class="rounded-xl border border-border bg-surface px-3 py-2">
+                        <p class="text-sm font-semibold text-text">{{ meal.recipe.name }}</p>
+                        {% if meal.note %}<p class="text-xs text-text-muted">{{ meal.note }}</p>{% endif %}
+                        <form class="mt-2" method="post" action="{% url 'planner_delete' meal.id %}">
+                          {% csrf_token %}
+                          <button class="text-xs font-semibold text-danger" type="submit">Remove</button>
+                        </form>
+                      </div>
+                    {% empty %}
+                      <p class="rounded-lg bg-surface px-3 py-4 text-center text-xs text-text-muted">Drop recipe here</p>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/planner.js' %}" defer></script>
+{% endblock %}

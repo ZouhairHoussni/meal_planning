@@ -1,0 +1,24 @@
+:root {
+  --primary: #236345;
+  --secondary: #1c5038;
+  --accent: #e68a52;
+  --primary-fg: #fff;
+  --body-bg: #faf9f6;
+  --body-fg: #172019;
+  --body-quiet-color: #667064;
+  --link-fg: #236345;
+  --link-hover-color: #1c5038;
+  --header-bg: #236345;
+  --header-color: #fff;
+  --breadcrumbs-bg: #1c5038;
+}
+
+#header {
+  box-shadow: 0 10px 30px rgba(23, 32, 25, 0.12);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: #236345;
+}

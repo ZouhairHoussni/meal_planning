@@ -1,0 +1,39 @@
+{% extends "layouts/app_shell.html" %}
+
+{% block title %}Recipes - MealBudget{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Recipes</p>
+      <h1 class="mt-2 text-3xl font-semibold text-text">Recipe library</h1>
+      <p class="mt-2 text-sm text-text-muted">Create meals with grocery components. Drag them into the planner next.</p>
+    </div>
+    <a class="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover" href="{% url 'recipe_new' %}">Create meal</a>
+  </div>
+
+  <section class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    {% for recipe in recipes %}
+      <article class="rounded-2xl border border-border bg-surface p-5 shadow-soft">
+        <h2 class="text-lg font-semibold text-text">{{ recipe.name }}</h2>
+        {% if recipe.description %}<p class="mt-2 text-sm text-text-muted">{{ recipe.description }}</p>{% endif %}
+        <ul class="mt-4 space-y-1 text-sm text-text-muted">
+          {% for component in recipe.components.all %}
+            <li>{{ component.quantity|floatformat:"-2" }} {{ component.unit }} {{ component.name }}</li>
+            {% if component.brand or component.store %}
+              <li class="pl-4 text-xs">{{ component.brand }}{% if component.brand and component.store %} - {% endif %}{{ component.store }}</li>
+            {% endif %}
+          {% empty %}
+            <li>No components yet.</li>
+          {% endfor %}
+        </ul>
+        <a class="mt-5 inline-flex text-sm font-semibold text-primary hover:text-primary-hover" href="{{ recipe.get_absolute_url }}">View recipe</a>
+      </article>
+    {% empty %}
+      <div class="rounded-2xl border border-border bg-surface p-6 md:col-span-2 xl:col-span-3">
+        <h2 class="text-xl font-semibold text-text">Create your first meal</h2>
+        <p class="mt-2 text-sm text-text-muted">Add the ingredients or components you expect to buy, then use the planner to generate shopping items.</p>
+      </div>
+    {% endfor %}
+  </section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}MealBudget{% endblock %}</title>
+    <script>
+      tailwind = {
+        theme: {
+          extend: {
+            colors: {
+              canvas: "#FAF9F6",
+              surface: "#FFFFFF",
+              "surface-muted": "#F3F4EF",
+              text: "#172019",
+              "text-muted": "#667064",
+              primary: "#236345",
+              "primary-hover": "#1C5038",
+              accent: "#E68A52",
+              success: "#238556",
+              warning: "#B97918",
+              danger: "#B74444",
+              border: "#E5E5DE",
+            },
+            boxShadow: {
+              soft: "0 18px 45px rgba(23, 32, 25, 0.07)",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="min-h-screen bg-canvas text-text antialiased">
+    {% block body %}{% endblock %}
+    <script src="{% static 'js/app.js' %}" defer></script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

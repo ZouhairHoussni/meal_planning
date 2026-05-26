@@ -1,0 +1,11 @@
+{% extends "layouts/auth_shell.html" %}
+
+{% block title %}Signed out - MealBudget{% endblock %}
+
+{% block auth_content %}
+  <div class="rounded-2xl border border-border bg-surface p-6 text-center shadow-soft">
+    <h1 class="text-2xl font-semibold text-text">Signed out</h1>
+    <p class="mt-3 text-sm leading-6 text-text-muted">Your session has ended.</p>
+    <a href="{% url 'login' %}" class="mt-6 inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover">Sign in again</a>
+  </div>
+{% endblock %}
