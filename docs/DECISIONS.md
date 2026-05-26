@@ -177,6 +177,16 @@ Reason: shopping happens one-handed in a store. The primary action must be tap-t
 
 Impact: shopping remains server-rendered and works without a JavaScript framework. Further polish should keep the same checklist mental model and avoid hiding the core buy/unbuy action behind menus.
 
+### Mobile-first visual identity
+
+Decision: the app now uses a shared blue-and-yellow design system across all user-facing server-rendered pages.
+
+Reason: the previous MVP shell was functional but visually flat, mostly black-and-white, and inconsistent across dashboard, planner, recipes, pantry, shopping, auth and household flows. The product needs a recognizable, warm and practical identity before adding more feature depth.
+
+Implementation: reusable tokens and component classes live in `templates/base.html` and `static/css/app.css`. The baseline palette is vibrant blue for primary actions, warm yellow for emphasis, navy for structure, cream/off-white for warm surfaces, green for positive states and orange/red for warnings. Core reusable classes cover app shell, mobile bottom nav, page heroes, cards, stats, forms, buttons, chips, empty states and shopping checklist cards.
+
+Impact: future templates should prefer these shared classes over page-specific Tailwind clusters. The app remains Django-rendered HTML with vanilla JavaScript and Tailwind CDN; no frontend framework or build pipeline was introduced.
+
 ## Proposed Decisions for Later Phases
 
 ### Ingredient estimates

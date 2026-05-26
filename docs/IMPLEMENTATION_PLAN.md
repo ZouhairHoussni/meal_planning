@@ -1,6 +1,6 @@
 # MealBudget Implementation Plan
 
-Status: Phase 0 implemented, plus an early compact recipe/planner/shopping slice requested by the user on 2026-05-25. Phase 1 household onboarding and weekly budget foundation implemented on 2026-05-26.
+Status: Phase 0 implemented, plus an early compact recipe/planner/shopping slice requested by the user on 2026-05-25. Phase 1 household onboarding and weekly budget foundation implemented on 2026-05-26. A full mobile-first frontend redesign baseline was added on 2026-05-27.
 
 ## Source Documents
 
@@ -26,6 +26,35 @@ Important issues to resolve or constrain:
 - User request on 2026-05-25 explicitly moved signup, clickable Planner/Shopping/Recipes/Pantry pages, recipe components, drag-and-drop planning, breakfast slots, extra meals and manual shopping additions into the current slice. This intentionally jumps ahead of the original strict phase order.
 
 ## Phased Plan
+
+### Frontend Redesign Baseline
+
+Status: implemented on 2026-05-27.
+
+Goal: replace the flat black-and-white MVP shell with a coherent, modern, blue-and-yellow, mobile-first UI system across the existing server-rendered pages.
+
+Audit findings addressed:
+
+- The old interface leaned on plain white panels, black text, gray borders and isolated green buttons, so the product had no memorable identity.
+- Navigation and page headers were visually quiet, making it hard to know where the user was or what to do next.
+- Forms and action rows used dense desktop-first grids that were uncomfortable around 360px to 430px mobile widths.
+- Planner, pantry and recipe pages had inconsistent card/button treatments compared with shopping.
+- Shopping was the strongest mobile workflow, but its visual identity needed to be pulled into the whole product.
+
+Implemented direction:
+
+- Shared design tokens in `templates/base.html` and `static/css/app.css`.
+- Blue primary, warm yellow accent, navy support, cream/off-white surfaces, green success and warm danger states.
+- Reusable shell, page hero, card, stat, form, button, chip, empty-state and mobile-bottom-nav styles.
+- Mobile app header and bottom navigation tuned for thumb reach.
+- Sticky mobile actions where useful on shopping and recipe creation.
+- Redesigned dashboard, planner, shopping, recipes, pantry, auth and household pages.
+
+Testing expectations:
+
+- Preserve route smoke tests for all primary pages.
+- Keep design-token regression tests so the UI cannot silently fall back to the old monochrome baseline.
+- Use browser screenshots for visual review whenever the local browser tooling is available; otherwise run live route smoke checks and document the tooling blocker.
 
 ### Phase 0: Repository Foundation and Design Shell
 

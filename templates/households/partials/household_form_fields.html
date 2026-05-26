@@ -1,36 +1,36 @@
 {% if form.non_field_errors %}
-  <p class="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-danger">{{ form.non_field_errors|striptags }}</p>
+  <p class="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm font-semibold text-danger">{{ form.non_field_errors|striptags }}</p>
 {% endif %}
 
 <div>
-  <label class="block text-sm font-medium text-text" for="{{ form.name.id_for_label }}">Household name</label>
-  <input class="mt-2 min-h-11 w-full rounded-xl border border-border bg-white px-4 py-3 text-text shadow-sm transition focus:border-primary" id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" value="{{ form.name.value|default_if_none:'' }}" required>
-  {% if form.name.errors %}<p class="mt-2 text-sm text-danger">{{ form.name.errors|striptags }}</p>{% endif %}
+  <label class="field-label" for="{{ form.name.id_for_label }}">Household name</label>
+  <input class="input mt-2" id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" value="{{ form.name.value|default_if_none:'' }}" required>
+  {% if form.name.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ form.name.errors|striptags }}</p>{% endif %}
 </div>
 
 <div class="grid gap-4 sm:grid-cols-3">
   <div>
-    <label class="block text-sm font-medium text-text" for="{{ form.default_servings.id_for_label }}">Default servings</label>
-    <input class="mt-2 min-h-11 w-full rounded-xl border border-border bg-white px-4 py-3 text-text shadow-sm transition focus:border-primary" id="{{ form.default_servings.id_for_label }}" name="{{ form.default_servings.html_name }}" value="{{ form.default_servings.value|default_if_none:'2' }}" inputmode="numeric" required>
-    {% if form.default_servings.errors %}<p class="mt-2 text-sm text-danger">{{ form.default_servings.errors|striptags }}</p>{% endif %}
+    <label class="field-label" for="{{ form.default_servings.id_for_label }}">Default servings</label>
+    <input class="input mt-2" id="{{ form.default_servings.id_for_label }}" name="{{ form.default_servings.html_name }}" value="{{ form.default_servings.value|default_if_none:'2' }}" inputmode="numeric" required>
+    {% if form.default_servings.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ form.default_servings.errors|striptags }}</p>{% endif %}
   </div>
   <div>
-    <label class="block text-sm font-medium text-text" for="{{ form.adults_count.id_for_label }}">Adults</label>
-    <input class="mt-2 min-h-11 w-full rounded-xl border border-border bg-white px-4 py-3 text-text shadow-sm transition focus:border-primary" id="{{ form.adults_count.id_for_label }}" name="{{ form.adults_count.html_name }}" value="{{ form.adults_count.value|default_if_none:'0' }}" inputmode="numeric" required>
-    {% if form.adults_count.errors %}<p class="mt-2 text-sm text-danger">{{ form.adults_count.errors|striptags }}</p>{% endif %}
+    <label class="field-label" for="{{ form.adults_count.id_for_label }}">Adults</label>
+    <input class="input mt-2" id="{{ form.adults_count.id_for_label }}" name="{{ form.adults_count.html_name }}" value="{{ form.adults_count.value|default_if_none:'0' }}" inputmode="numeric" required>
+    {% if form.adults_count.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ form.adults_count.errors|striptags }}</p>{% endif %}
   </div>
   <div>
-    <label class="block text-sm font-medium text-text" for="{{ form.children_count.id_for_label }}">Children</label>
-    <input class="mt-2 min-h-11 w-full rounded-xl border border-border bg-white px-4 py-3 text-text shadow-sm transition focus:border-primary" id="{{ form.children_count.id_for_label }}" name="{{ form.children_count.html_name }}" value="{{ form.children_count.value|default_if_none:'0' }}" inputmode="numeric" required>
-    {% if form.children_count.errors %}<p class="mt-2 text-sm text-danger">{{ form.children_count.errors|striptags }}</p>{% endif %}
+    <label class="field-label" for="{{ form.children_count.id_for_label }}">Children</label>
+    <input class="input mt-2" id="{{ form.children_count.id_for_label }}" name="{{ form.children_count.html_name }}" value="{{ form.children_count.value|default_if_none:'0' }}" inputmode="numeric" required>
+    {% if form.children_count.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ form.children_count.errors|striptags }}</p>{% endif %}
   </div>
 </div>
 
 <div>
-  <label class="block text-sm font-medium text-text" for="{{ form.default_weekly_budget.id_for_label }}">Weekly budget</label>
-  <div class="mt-2 flex rounded-xl border border-border bg-white shadow-sm focus-within:border-primary">
-    <span class="grid min-h-11 place-items-center border-r border-border px-4 text-sm font-semibold text-text-muted">EUR</span>
-    <input class="min-h-11 w-full rounded-r-xl px-4 py-3 text-text outline-none" id="{{ form.default_weekly_budget.id_for_label }}" name="{{ form.default_weekly_budget.html_name }}" value="{{ form.default_weekly_budget.value|default_if_none:'' }}" inputmode="decimal" required>
+  <label class="field-label" for="{{ form.default_weekly_budget.id_for_label }}">Weekly budget</label>
+  <div class="mt-2 flex rounded-[18px] border border-border bg-white shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+    <span class="grid min-h-12 place-items-center border-r border-border px-4 text-sm font-black text-primary">EUR</span>
+    <input class="min-h-12 w-full rounded-r-[18px] px-4 py-3 text-text outline-none" id="{{ form.default_weekly_budget.id_for_label }}" name="{{ form.default_weekly_budget.html_name }}" value="{{ form.default_weekly_budget.value|default_if_none:'' }}" inputmode="decimal" required>
   </div>
-  {% if form.default_weekly_budget.errors %}<p class="mt-2 text-sm text-danger">{{ form.default_weekly_budget.errors|striptags }}</p>{% endif %}
+  {% if form.default_weekly_budget.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ form.default_weekly_budget.errors|striptags }}</p>{% endif %}
 </div>

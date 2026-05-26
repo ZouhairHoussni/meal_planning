@@ -1,41 +1,50 @@
 {% extends "base.html" %}
 
 {% block body %}
-  <div class="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
-    <aside class="hidden border-r border-border bg-surface px-5 py-6 lg:block">
-      <a href="{% url 'dashboard' %}" class="flex items-center gap-3 text-lg font-semibold text-text">
-        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-sm font-bold text-white">MB</span>
-        <span>MealBudget</span>
+  <div class="app-shell lg:grid lg:grid-cols-[260px_1fr]">
+    <aside class="shell-sidebar hidden px-5 py-6 lg:block">
+      <a href="{% url 'dashboard' %}" class="flex items-center gap-3">
+        <span class="brand-mark bg-white text-primary">MB</span>
+        <span>
+          <span class="block text-lg font-black tracking-tight text-white">MealBudget</span>
+          <span class="block text-xs font-semibold text-white/60">Plan, shop, save</span>
+        </span>
       </a>
-      <nav class="mt-10 space-y-1" aria-label="Primary">
-        <a href="{% url 'dashboard' %}" class="flex items-center rounded-xl px-3 py-3 text-sm font-semibold text-text hover:bg-surface-muted hover:text-primary">Dashboard</a>
-        <a href="{% url 'planner' %}" class="flex items-center rounded-xl px-3 py-3 text-sm font-semibold text-text hover:bg-surface-muted hover:text-primary">Planner</a>
-        <a href="{% url 'shopping' %}" class="flex items-center rounded-xl px-3 py-3 text-sm font-semibold text-text hover:bg-surface-muted hover:text-primary">Shopping</a>
-        <a href="{% url 'recipe_list' %}" class="flex items-center rounded-xl px-3 py-3 text-sm font-semibold text-text hover:bg-surface-muted hover:text-primary">Recipes</a>
-        <a href="{% url 'pantry' %}" class="flex items-center rounded-xl px-3 py-3 text-sm font-semibold text-text hover:bg-surface-muted hover:text-primary">Pantry</a>
-        <a href="{% url 'household_settings' %}" class="flex items-center rounded-xl px-3 py-3 text-sm font-semibold text-text hover:bg-surface-muted hover:text-primary">Household</a>
+
+      <nav class="mt-10 space-y-2" aria-label="Primary">
+        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+        <a href="{% url 'planner' %}" class="nav-link">Planner</a>
+        <a href="{% url 'shopping' %}" class="nav-link">Shopping</a>
+        <a href="{% url 'recipe_list' %}" class="nav-link">Recipes</a>
+        <a href="{% url 'pantry' %}" class="nav-link">Pantry</a>
+        <a href="{% url 'household_settings' %}" class="nav-link">Household</a>
       </nav>
+
+      <div class="mt-10 rounded-[1.5rem] border border-white/10 bg-white/10 p-4 text-sm leading-6 text-white/76">
+        <p class="font-bold text-white">This week</p>
+        <p class="mt-1">Keep the shopping list honest, then let Pantry remember what came home.</p>
+      </div>
     </aside>
 
     <div class="pb-24 lg:pb-0">
-      <header class="sticky top-0 z-20 border-b border-border bg-canvas/95 px-4 py-3 backdrop-blur lg:hidden">
-        <div class="flex items-center justify-between">
-          <a href="{% url 'dashboard' %}" class="flex items-center gap-2 font-semibold">
-            <span class="grid h-9 w-9 place-items-center rounded-2xl bg-primary text-xs font-bold text-white">MB</span>
-            <span>MealBudget</span>
+      <header class="mobile-header sticky top-0 z-20 border-b px-4 py-3 lg:hidden">
+        <div class="flex items-center justify-between gap-3">
+          <a href="{% url 'dashboard' %}" class="flex min-w-0 items-center gap-2 font-semibold">
+            <span class="brand-mark h-10 w-10 text-xs">MB</span>
+            <span class="truncate text-base font-black text-text">MealBudget</span>
           </a>
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
-            <button class="rounded-xl border border-border bg-surface px-3 py-2 text-sm font-medium text-text" type="submit">Sign out</button>
+            <button class="btn-secondary min-h-11 px-3 py-2 text-xs" type="submit">Sign out</button>
           </form>
         </div>
       </header>
 
-      <main class="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <main class="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
         {% if messages %}
           <div class="mb-4 space-y-2">
             {% for message in messages %}
-              <div class="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text">{{ message }}</div>
+              <div class="app-card border-primary/20 bg-primary-soft/70 px-4 py-3 text-sm font-semibold text-primary">{{ message }}</div>
             {% endfor %}
           </div>
         {% endif %}

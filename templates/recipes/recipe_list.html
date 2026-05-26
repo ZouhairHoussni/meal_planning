@@ -3,36 +3,47 @@
 {% block title %}Recipes - MealBudget{% endblock %}
 
 {% block content %}
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Recipes</p>
-      <h1 class="mt-2 text-3xl font-semibold text-text">Recipe library</h1>
-      <p class="mt-2 text-sm text-text-muted">Create meals with grocery components. Drag them into the planner next.</p>
+  <section class="page-hero">
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="eyebrow">Recipes</p>
+        <h1 class="page-title mt-2">Recipe library</h1>
+        <p class="mt-3 max-w-2xl muted-copy">Build meals from grocery components, then place them into the weekly planner.</p>
+      </div>
+      <a class="btn-primary" href="{% url 'recipe_new' %}">Create meal</a>
     </div>
-    <a class="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover" href="{% url 'recipe_new' %}">Create meal</a>
-  </div>
+  </section>
 
-  <section class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+  <section class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
     {% for recipe in recipes %}
-      <article class="rounded-2xl border border-border bg-surface p-5 shadow-soft">
-        <h2 class="text-lg font-semibold text-text">{{ recipe.name }}</h2>
-        {% if recipe.description %}<p class="mt-2 text-sm text-text-muted">{{ recipe.description }}</p>{% endif %}
-        <ul class="mt-4 space-y-1 text-sm text-text-muted">
+      <article class="app-card">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-text">{{ recipe.name }}</h2>
+            {% if recipe.description %}<p class="mt-2 text-sm leading-6 text-text-muted">{{ recipe.description }}</p>{% endif %}
+          </div>
+          <span class="mini-chip">{{ recipe.components.count }}</span>
+        </div>
+        <ul class="mt-5 space-y-2 text-sm text-text-muted">
           {% for component in recipe.components.all %}
-            <li>{{ component.quantity|floatformat:"-2" }} {{ component.unit }} {{ component.name }}</li>
-            {% if component.brand or component.store %}
-              <li class="pl-4 text-xs">{{ component.brand }}{% if component.brand and component.store %} - {% endif %}{{ component.store }}</li>
-            {% endif %}
+            <li class="rounded-lg bg-surface-muted/70 px-3 py-2">
+              <span class="font-black text-text">{{ component.quantity|floatformat:"-2" }} {{ component.unit }}</span>
+              {{ component.name }}
+              {% if component.brand or component.store %}
+                <span class="mt-1 block text-xs">{{ component.brand }}{% if component.brand and component.store %} - {% endif %}{{ component.store }}</span>
+              {% endif %}
+            </li>
           {% empty %}
             <li>No components yet.</li>
           {% endfor %}
         </ul>
-        <a class="mt-5 inline-flex text-sm font-semibold text-primary hover:text-primary-hover" href="{{ recipe.get_absolute_url }}">View recipe</a>
+        <a class="btn-secondary mt-5 w-full" href="{{ recipe.get_absolute_url }}">View recipe</a>
       </article>
     {% empty %}
-      <div class="rounded-2xl border border-border bg-surface p-6 md:col-span-2 xl:col-span-3">
-        <h2 class="text-xl font-semibold text-text">Create your first meal</h2>
-        <p class="mt-2 text-sm text-text-muted">Add the ingredients or components you expect to buy, then use the planner to generate shopping items.</p>
+      <div class="empty-state md:col-span-2 xl:col-span-3">
+        <h2 class="text-2xl font-black text-text">Create your first meal</h2>
+        <p class="mt-2 muted-copy">Add ingredients or components you expect to buy, then use the planner to generate shopping items.</p>
+        <a class="btn-primary mt-5" href="{% url 'recipe_new' %}">Create meal</a>
       </div>
     {% endfor %}
   </section>

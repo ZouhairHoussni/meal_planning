@@ -3,26 +3,27 @@
 {% block title %}Sign up - MealBudget{% endblock %}
 
 {% block auth_content %}
-  <div class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
-    <h1 class="text-2xl font-semibold text-text">Create your account</h1>
-    <p class="mt-2 text-sm leading-6 text-text-muted">Start with recipes, then drag them into your weekly plan.</p>
+  <div class="form-panel">
+    <p class="eyebrow">Welcome</p>
+    <h1 class="mt-2 text-3xl font-black text-text">Create your account</h1>
+    <p class="mt-2 muted-copy">Start with your household budget, then build recipes and shop with a calmer list.</p>
 
     <form class="mt-6 space-y-5" method="post">
       {% csrf_token %}
       {% for field in form %}
         <div>
-          <label class="block text-sm font-medium text-text" for="{{ field.id_for_label }}">{{ field.label }}</label>
-          <input class="mt-2 min-h-11 w-full rounded-xl border border-border bg-white px-4 py-3 text-text shadow-sm transition focus:border-primary" id="{{ field.id_for_label }}" name="{{ field.html_name }}" type="{% if 'password' in field.name %}password{% elif field.name == 'email' %}email{% else %}text{% endif %}" value="{{ field.value|default_if_none:'' }}" {% if field.field.required %}required{% endif %}>
+          <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <input class="input mt-2" id="{{ field.id_for_label }}" name="{{ field.html_name }}" type="{% if 'password' in field.name %}password{% elif field.name == 'email' %}email{% else %}text{% endif %}" value="{{ field.value|default_if_none:'' }}" {% if field.field.required %}required{% endif %}>
           {% if field.errors %}
-            <p class="mt-2 text-sm text-danger">{{ field.errors|striptags }}</p>
+            <p class="mt-2 text-sm font-semibold text-danger">{{ field.errors|striptags }}</p>
           {% endif %}
         </div>
       {% endfor %}
-      <button class="min-h-11 w-full rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover" type="submit">Create account</button>
+      <button class="btn-primary w-full" type="submit">Create account</button>
     </form>
     <p class="mt-5 text-center text-sm text-text-muted">
       Already have an account?
-      <a class="font-semibold text-primary hover:text-primary-hover" href="{% url 'login' %}">Sign in</a>
+      <a class="font-black text-primary hover:text-primary-hover" href="{% url 'login' %}">Sign in</a>
     </p>
   </div>
 {% endblock %}

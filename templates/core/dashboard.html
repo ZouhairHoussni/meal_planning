@@ -3,55 +3,61 @@
 {% block title %}Dashboard - MealBudget{% endblock %}
 
 {% block content %}
-  <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Dashboard</p>
-      <h1 class="mt-2 text-3xl font-semibold tracking-normal text-text sm:text-4xl">This week</h1>
-      <p class="mt-3 max-w-2xl text-sm leading-6 text-text-muted">Your budget-first meal planning workspace is ready for the first product slice.</p>
-      <p class="mt-1 text-sm font-semibold text-text">{{ household.name }}</p>
+  <section class="page-hero">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1 class="page-title mt-2">This week</h1>
+        <p class="mt-3 max-w-2xl muted-copy">A clear view of budget, meals, shopping progress and the patterns emerging from your plan.</p>
+        <p class="mt-3 inline-flex rounded-full bg-accent-soft px-3 py-1 text-sm font-black text-navy">{{ household.name }}</p>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <a class="btn-secondary" href="{% url 'household_settings' %}">Household settings</a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="btn-ghost w-full" type="submit">Sign out</button>
+        </form>
+      </div>
     </div>
-    <div class="hidden gap-3 lg:flex">
-      <a class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-text transition hover:border-primary" href="{% url 'household_settings' %}">Household settings</a>
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button class="min-h-11 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-text transition hover:border-primary" type="submit">Sign out</button>
-      </form>
-    </div>
-  </div>
+  </section>
 
-  <section class="mt-8 grid gap-4 md:grid-cols-3">
-    <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Weekly budget</p>
-      <p class="money-value mt-3 text-3xl font-bold text-text">EUR {{ budget_status.budget|floatformat:"2" }}</p>
-      <p class="mt-2 text-sm text-text-muted">
+  <section class="mt-5 grid gap-4 md:grid-cols-3">
+    <article class="stat-card accent-card">
+      <p class="text-sm font-bold text-white/72">Weekly budget</p>
+      <p class="money-value mt-3 text-4xl font-black">EUR {{ budget_status.budget|floatformat:"2" }}</p>
+      <p class="mt-2 text-sm text-white/78">
         EUR {{ budget_status.known_spend|floatformat:"2" }} known spend.
         {% if budget_status.is_over_budget %}
-          <span class="font-semibold text-danger">EUR {{ budget_status.display_delta|floatformat:"2" }} over</span>
+          <span class="font-black text-accent">EUR {{ budget_status.display_delta|floatformat:"2" }} over</span>
         {% else %}
-          <span class="font-semibold text-success">EUR {{ budget_status.remaining|floatformat:"2" }} left</span>
+          <span class="font-black text-accent">EUR {{ budget_status.remaining|floatformat:"2" }} left</span>
         {% endif %}
       </p>
-      <div class="mt-4 h-2 rounded-full bg-surface-muted">
-        <div class="h-2 rounded-full {% if budget_status.is_over_budget %}bg-danger{% else %}bg-primary{% endif %}" style="width: {{ budget_status.bar_percentage }}%"></div>
+      <div class="mt-5 h-3 rounded-full bg-white/18">
+        <div class="h-3 rounded-full {% if budget_status.is_over_budget %}bg-danger{% else %}bg-accent{% endif %}" style="width: {{ budget_status.bar_percentage }}%"></div>
       </div>
     </article>
-    <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Meals planned</p>
-      <p class="money-value mt-3 text-3xl font-bold text-text">{{ meal_count }}</p>
+
+    <article class="stat-card">
+      <p class="text-sm font-bold text-text-muted">Meals planned</p>
+      <p class="money-value mt-3 text-4xl font-black text-text">{{ meal_count }}</p>
       <p class="mt-2 text-sm text-text-muted">{{ meal_count }} meal{{ meal_count|pluralize }} planned.</p>
+      <a class="btn-ghost mt-4 px-0" href="{% url 'planner' %}">Open planner</a>
     </article>
-    <article class="rounded-2xl border border-border bg-surface p-5">
-      <p class="text-sm font-medium text-text-muted">Shopping list</p>
-      <p class="money-value mt-3 text-3xl font-bold text-text">{{ shopping_summary.item_count }}</p>
+
+    <article class="stat-card gold-card">
+      <p class="text-sm font-bold text-text-muted">Shopping list</p>
+      <p class="money-value mt-3 text-4xl font-black text-text">{{ shopping_summary.item_count }}</p>
       <p class="mt-2 text-sm text-text-muted">{{ shopping_summary.purchased_count }} marked done.</p>
+      <a class="btn-ghost mt-4 px-0" href="{% url 'shopping' %}">Shop now</a>
     </article>
   </section>
 
-  <section class="mt-6 rounded-2xl border border-border bg-surface p-5 shadow-soft">
+  <section class="form-panel mt-5">
     <form class="grid gap-3 md:grid-cols-[1fr_1fr_auto]" method="get">
       <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted" for="store">Store filter</label>
-        <select class="mt-1 min-h-11 w-full rounded-xl border border-border px-3" id="store" name="store">
+        <label class="field-label" for="store">Store filter</label>
+        <select class="select mt-2" id="store" name="store">
           <option value="">All stores</option>
           {% for store in insights.available_stores %}
             <option value="{{ store }}" {% if insights.active_store == store %}selected{% endif %}>{{ store }}</option>
@@ -59,39 +65,39 @@
         </select>
       </div>
       <div>
-        <label class="block text-xs font-semibold uppercase tracking-[0.14em] text-text-muted" for="source">Source filter</label>
-        <select class="mt-1 min-h-11 w-full rounded-xl border border-border px-3" id="source" name="source">
+        <label class="field-label" for="source">Source filter</label>
+        <select class="select mt-2" id="source" name="source">
           <option value="">Planned and manual</option>
           <option value="planned" {% if insights.active_source == "planned" %}selected{% endif %}>Planned</option>
           <option value="manual" {% if insights.active_source == "manual" %}selected{% endif %}>Manual extras</option>
         </select>
       </div>
-      <button class="min-h-11 self-end rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover" type="submit">Apply filters</button>
+      <button class="btn-primary self-end" type="submit">Apply filters</button>
     </form>
   </section>
 
-  <section class="mt-6 grid gap-4 lg:grid-cols-3">
-    <article class="rounded-2xl border border-border bg-surface p-5 shadow-soft">
-      <p class="text-sm font-medium text-text-muted">Most planned meal</p>
+  <section class="mt-5 grid gap-4 lg:grid-cols-3">
+    <article class="app-card">
+      <p class="text-sm font-bold text-text-muted">Most planned meal</p>
       {% if insights.most_planned_meal %}
-        <h2 class="mt-2 text-2xl font-semibold text-text">{{ insights.most_planned_meal.name }}</h2>
+        <h2 class="mt-2 text-2xl font-black text-text">{{ insights.most_planned_meal.name }}</h2>
         <p class="mt-2 text-sm text-text-muted">{{ insights.most_planned_meal.count }} planned time{{ insights.most_planned_meal.count|pluralize }}.</p>
       {% else %}
-        <h2 class="mt-2 text-xl font-semibold text-text">No meals yet</h2>
+        <h2 class="mt-2 text-xl font-black text-text">No meals yet</h2>
         <p class="mt-2 text-sm text-text-muted">Plan a meal to see patterns.</p>
       {% endif %}
     </article>
 
-    <article class="rounded-2xl border border-border bg-surface p-5 shadow-soft">
-      <p class="text-sm font-medium text-text-muted">Top components</p>
-      <div class="mt-3 space-y-3">
+    <article class="app-card">
+      <p class="text-sm font-bold text-text-muted">Top components</p>
+      <div class="mt-4 space-y-3">
         {% for component in insights.top_components %}
-          <div class="flex items-start justify-between gap-3">
+          <div class="flex items-start justify-between gap-3 rounded-lg bg-surface-muted/70 p-3">
             <div>
-              <p class="font-semibold text-text">{{ component.name }}</p>
+              <p class="font-black text-text">{{ component.name }}</p>
               <p class="text-xs text-text-muted">{{ component.brand }}{% if component.brand and component.store %} - {% endif %}{{ component.store }}</p>
             </div>
-            <p class="text-sm font-semibold text-text">{{ component.quantity|floatformat:"-2" }} {{ component.unit }}</p>
+            <p class="text-sm font-black text-primary">{{ component.quantity|floatformat:"-2" }} {{ component.unit }}</p>
           </div>
         {% empty %}
           <p class="text-sm text-text-muted">Components appear after you plan meals.</p>
@@ -99,16 +105,16 @@
       </div>
     </article>
 
-    <article class="rounded-2xl border border-border bg-surface p-5 shadow-soft">
-      <p class="text-sm font-medium text-text-muted">Spend by store</p>
-      <div class="mt-3 space-y-3">
+    <article class="app-card">
+      <p class="text-sm font-bold text-text-muted">Spend by store</p>
+      <div class="mt-4 space-y-3">
         {% for row in insights.store_totals %}
-          <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center justify-between gap-3 rounded-lg bg-cream p-3">
             <div>
-              <p class="font-semibold text-text">{{ row.store }}</p>
+              <p class="font-black text-text">{{ row.store }}</p>
               <p class="text-xs text-text-muted">{{ row.item_count }} item{{ row.item_count|pluralize }}</p>
             </div>
-            <p class="money-value text-sm font-semibold text-text">EUR {{ row.total|floatformat:"2" }}</p>
+            <p class="money-value text-sm font-black text-navy">EUR {{ row.total|floatformat:"2" }}</p>
           </div>
         {% empty %}
           <p class="text-sm text-text-muted">Add prices and stores to compare spend.</p>
@@ -117,7 +123,7 @@
     </article>
   </section>
 
-  <section class="mt-6">
+  <section class="mt-5">
     {% include "components/empty_state.html" %}
   </section>
 {% endblock %}

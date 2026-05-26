@@ -4,14 +4,14 @@
 
 {% block content %}
   <div class="mx-auto max-w-5xl">
-    <section class="shopping-hero -mx-4 px-4 pb-5 pt-2 sm:mx-0 sm:rounded-[2rem] sm:px-6 sm:pt-6">
+    <section class="shopping-hero page-hero -mx-4 px-4 pb-5 pt-2 sm:mx-0 sm:px-6 sm:pt-6">
       <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Shop mode</p>
-          <h1 class="mt-2 text-3xl font-semibold tracking-normal text-text sm:text-4xl">Shopping list</h1>
-          <p class="mt-2 max-w-2xl text-sm leading-6 text-text-muted">Tap items as you buy them. Bought groceries move into pantry automatically.</p>
+          <p class="eyebrow">Shop mode</p>
+          <h1 class="page-title mt-2">Shopping list</h1>
+          <p class="mt-3 max-w-2xl muted-copy">Tap items as you buy them. Bought groceries move into pantry automatically.</p>
         </div>
-        <a class="inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-white/90 px-5 py-3 text-sm font-semibold text-text shadow-sm transition hover:border-primary hover:text-primary" href="{% url 'planner' %}">Back to planner</a>
+        <a class="btn-secondary" href="{% url 'planner' %}">Back to planner</a>
       </div>
 
       <div class="mt-6 grid gap-3 sm:grid-cols-3">
@@ -34,11 +34,11 @@
       </div>
     </section>
 
-    <section class="sticky top-0 z-10 -mx-4 border-y border-border bg-canvas/95 px-4 py-3 backdrop-blur sm:top-3 sm:mx-0 sm:mt-5 sm:rounded-3xl sm:border">
+    <section class="sticky top-16 z-10 -mx-4 border-y border-border bg-canvas/95 px-4 py-3 backdrop-blur sm:top-3 sm:mx-0 sm:mt-5 sm:rounded-lg sm:border lg:top-3">
       <form class="grid gap-3 md:grid-cols-[1.4fr_90px_100px_110px_1fr_1fr_auto] md:items-end" method="post" action="{% url 'shopping_add_manual' %}">
         {% csrf_token %}
         <div class="md:col-span-7">
-          <h2 class="text-base font-semibold text-text">Quick add</h2>
+          <h2 class="section-title text-base">Quick add</h2>
         </div>
         <div>
           <label class="sr-only">Item</label>
@@ -68,15 +68,15 @@
           <label class="sr-only">Store</label>
           <input class="shopping-input" name="{{ manual_form.store.html_name }}" placeholder="Store">
         </div>
-        <button class="min-h-12 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover" type="submit">Add</button>
+        <button class="btn-primary" type="submit">Add</button>
       </form>
     </section>
 
     <section class="mt-6">
       <div class="flex items-end justify-between gap-4">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Still to buy</p>
-          <h2 class="mt-1 text-2xl font-semibold text-text">{{ to_buy_items|length }} item{{ to_buy_items|length|pluralize }}</h2>
+          <p class="eyebrow">Still to buy</p>
+          <h2 class="section-title mt-1">{{ to_buy_items|length }} item{{ to_buy_items|length|pluralize }}</h2>
         </div>
         <p class="hidden text-sm text-text-muted sm:block">Large tap targets for one-handed shopping.</p>
       </div>
@@ -86,7 +86,7 @@
           {% include "shopping/partials/shopping_item_card.html" with item=item is_done=False %}
         {% empty %}
           <div class="shopping-empty">
-            <h3 class="text-xl font-semibold text-text">All clear</h3>
+            <h3 class="text-xl font-black text-text">All clear</h3>
             <p class="mt-2 text-sm text-text-muted">Add a grocery above or plan a recipe to generate your next list.</p>
           </div>
         {% endfor %}
@@ -96,8 +96,8 @@
     <section class="mt-8 pb-8">
       <div class="flex items-end justify-between gap-4">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-success">Already in pantry</p>
-          <h2 class="mt-1 text-2xl font-semibold text-text">{{ purchased_items|length }} item{{ purchased_items|length|pluralize }}</h2>
+          <p class="eyebrow text-success">Already in pantry</p>
+          <h2 class="section-title mt-1">{{ purchased_items|length }} item{{ purchased_items|length|pluralize }}</h2>
         </div>
       </div>
 
@@ -106,7 +106,7 @@
           {% include "shopping/partials/shopping_item_card.html" with item=item is_done=True %}
         {% empty %}
           <div class="shopping-empty">
-            <h3 class="text-xl font-semibold text-text">Nothing bought yet</h3>
+            <h3 class="text-xl font-black text-text">Nothing bought yet</h3>
             <p class="mt-2 text-sm text-text-muted">Tap a grocery when it lands in the basket.</p>
           </div>
         {% endfor %}

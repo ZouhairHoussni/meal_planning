@@ -19,5 +19,5 @@ class PlannedMealForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.setdefault(
                 "class",
-                "min-h-11 w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-text",
+                "input",
             )

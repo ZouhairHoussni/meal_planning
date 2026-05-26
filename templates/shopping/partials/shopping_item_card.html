@@ -14,10 +14,10 @@
     <div class="min-w-0 flex-1">
       <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0">
-          <h3 class="truncate text-lg font-semibold text-text {% if is_done %}text-text-muted line-through{% endif %}">{{ item.name }}</h3>
+          <h3 class="truncate text-lg font-black text-text {% if is_done %}text-text-muted line-through{% endif %}">{{ item.name }}</h3>
           <p class="mt-1 text-sm text-text-muted">{{ item.quantity|floatformat:"-2" }} {{ item.unit }} - {{ item.get_source_display }}</p>
         </div>
-        <p class="money-value text-lg font-bold text-text">{% if item.price %}EUR {{ item.price }}{% else %}<span class="text-sm font-semibold text-warning">No price</span>{% endif %}</p>
+        <p class="money-value text-lg font-black text-text">{% if item.price %}EUR {{ item.price }}{% else %}<span class="text-sm font-black text-warning">No price</span>{% endif %}</p>
       </div>
 
       <div class="mt-3 flex flex-wrap gap-2">
@@ -27,8 +27,8 @@
       </div>
 
       <details class="mt-4">
-        <summary class="inline-flex min-h-11 cursor-pointer items-center rounded-2xl border border-border bg-white px-4 py-2 text-sm font-semibold text-text transition hover:border-primary hover:text-primary">Edit item details</summary>
-        <form class="mt-3 grid gap-3 rounded-3xl border border-border bg-white p-3 md:grid-cols-[1.4fr_90px_100px_110px_1fr_1fr_auto]" method="post" action="{% url 'shopping_update' item.id %}">
+        <summary class="btn-secondary inline-flex cursor-pointer text-sm">Edit item details</summary>
+        <form class="mt-3 grid gap-3 rounded-lg border border-border bg-white p-3 md:grid-cols-[1.4fr_90px_100px_110px_1fr_1fr_auto]" method="post" action="{% url 'shopping_update' item.id %}">
           {% csrf_token %}
           <input class="shopping-input" name="name" value="{{ item.name }}" aria-label="Item name" required>
           <input class="shopping-input" name="quantity" value="{{ item.quantity|floatformat:'-2' }}" inputmode="decimal" aria-label="Quantity" required>
@@ -40,7 +40,7 @@
           <input class="shopping-input" name="price" value="{{ item.price|default_if_none:'' }}" placeholder="Price" inputmode="decimal" aria-label="Price">
           <input class="shopping-input" name="brand" value="{{ item.brand }}" placeholder="Brand" aria-label="Brand">
           <input class="shopping-input" name="store" value="{{ item.store }}" placeholder="Store" aria-label="Store">
-          <button class="min-h-12 rounded-2xl border border-border bg-surface px-4 py-2 text-sm font-semibold text-text transition hover:border-primary hover:text-primary" type="submit">Save</button>
+          <button class="btn-secondary" type="submit">Save</button>
         </form>
       </details>
     </div>

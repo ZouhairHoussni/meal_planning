@@ -1,18 +1,37 @@
 {% extends "base.html" %}
 
 {% block body %}
-  <main class="grid min-h-screen bg-canvas lg:grid-cols-[1fr_520px]">
-    <section class="hidden items-center px-12 lg:flex">
+  <main class="grid min-h-screen lg:grid-cols-[1fr_520px]">
+    <section class="hidden items-center bg-navy px-12 text-white lg:flex">
       <div class="max-w-xl">
-        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">MealBudget</p>
-        <h1 class="mt-5 text-4xl font-semibold leading-tight text-text">Plan meals. Shop with purpose. Stay on budget.</h1>
-        <p class="mt-5 text-lg leading-8 text-text-muted">A calm weekly workspace for meals, pantry checks and grocery spending.</p>
+        <a href="{% url 'dashboard' %}" class="flex items-center gap-3">
+          <span class="brand-mark bg-white text-primary">MB</span>
+          <span class="text-xl font-black">MealBudget</span>
+        </a>
+        <p class="mt-12 text-sm font-black uppercase tracking-[0.22em] text-accent">Budget-first meal planning</p>
+        <h1 class="mt-5 text-5xl font-black leading-[1.02] tracking-normal">Plan meals, shop smarter, keep the week under control.</h1>
+        <p class="mt-6 text-lg leading-8 text-white/76">A warm, practical workspace for recipes, pantry stock and grocery spend.</p>
+        <div class="mt-8 grid grid-cols-3 gap-3">
+          <div class="rounded-lg bg-white/10 p-4">
+            <p class="text-2xl font-black text-accent">EUR</p>
+            <p class="mt-1 text-sm text-white/70">budget focus</p>
+          </div>
+          <div class="rounded-lg bg-white/10 p-4">
+            <p class="text-2xl font-black text-accent">7d</p>
+            <p class="mt-1 text-sm text-white/70">weekly plan</p>
+          </div>
+          <div class="rounded-lg bg-white/10 p-4">
+            <p class="text-2xl font-black text-accent">Tap</p>
+            <p class="mt-1 text-sm text-white/70">shop mode</p>
+          </div>
+        </div>
       </div>
     </section>
+
     <section class="flex min-h-screen items-center justify-center px-4 py-10">
       <div class="w-full max-w-md">
-        <a href="{% url 'dashboard' %}" class="mb-8 flex items-center justify-center gap-3 text-lg font-semibold text-text">
-          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-sm font-bold text-white">MB</span>
+        <a href="{% url 'dashboard' %}" class="mb-8 flex items-center justify-center gap-3 text-lg font-black text-text lg:hidden">
+          <span class="brand-mark">MB</span>
           <span>MealBudget</span>
         </a>
         {% block auth_content %}{% endblock %}

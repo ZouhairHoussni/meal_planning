@@ -3,27 +3,34 @@
 {% block title %}{{ recipe.name }} - MealBudget{% endblock %}
 
 {% block content %}
-  <article class="max-w-3xl rounded-2xl border border-border bg-surface p-6 shadow-soft">
-    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Recipe</p>
-    <h1 class="mt-2 text-3xl font-semibold text-text">{{ recipe.name }}</h1>
-    {% if recipe.description %}<p class="mt-3 text-sm leading-6 text-text-muted">{{ recipe.description }}</p>{% endif %}
-    <h2 class="mt-8 text-lg font-semibold text-text">Components</h2>
-    <ul class="mt-4 divide-y divide-border rounded-xl border border-border">
-      {% for component in recipe.components.all %}
-        <li class="flex items-center justify-between px-4 py-3 text-sm">
-          <span class="font-medium text-text">{{ component.name }}</span>
-          <span class="text-right text-text-muted">
-            {{ component.quantity|floatformat:"-2" }} {{ component.unit }}
-            {% if component.brand %}<span class="block text-xs">{{ component.brand }}</span>{% endif %}
-            {% if component.store %}<span class="block text-xs">{{ component.store }}</span>{% endif %}
-          </span>
-        </li>
-      {% endfor %}
-    </ul>
-    <div class="mt-6 flex gap-3">
-      <a class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-text" href="{% url 'recipe_edit' recipe.id %}">Edit meal</a>
-      <a class="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primary-hover" href="{% url 'planner' %}">Add to planner</a>
-      <a class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-text" href="{% url 'recipe_list' %}">Back to recipes</a>
-    </div>
+  <article class="mx-auto max-w-4xl">
+    <section class="page-hero">
+      <p class="eyebrow">Recipe</p>
+      <h1 class="page-title mt-2">{{ recipe.name }}</h1>
+      {% if recipe.description %}<p class="mt-3 max-w-2xl muted-copy">{{ recipe.description }}</p>{% endif %}
+      <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+        <a class="btn-primary" href="{% url 'planner' %}">Add to planner</a>
+        <a class="btn-secondary" href="{% url 'recipe_edit' recipe.id %}">Edit meal</a>
+        <a class="btn-ghost" href="{% url 'recipe_list' %}">Back to recipes</a>
+      </div>
+    </section>
+
+    <section class="app-card mt-5">
+      <h2 class="section-title">Components</h2>
+      <ul class="mt-4 space-y-3">
+        {% for component in recipe.components.all %}
+          <li class="flex items-center justify-between gap-4 rounded-lg bg-surface-muted/70 px-4 py-3 text-sm">
+            <span class="font-black text-text">{{ component.name }}</span>
+            <span class="text-right text-text-muted">
+              <span class="font-black text-primary">{{ component.quantity|floatformat:"-2" }} {{ component.unit }}</span>
+              {% if component.brand %}<span class="block text-xs">{{ component.brand }}</span>{% endif %}
+              {% if component.store %}<span class="block text-xs">{{ component.store }}</span>{% endif %}
+            </span>
+          </li>
+        {% empty %}
+          <li class="text-sm text-text-muted">No components yet.</li>
+        {% endfor %}
+      </ul>
+    </section>
   </article>
 {% endblock %}
