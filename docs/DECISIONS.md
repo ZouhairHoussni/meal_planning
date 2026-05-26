@@ -153,6 +153,22 @@ Reason: the app does not yet have completed shopping trips or immutable weekly l
 
 Impact: this is not yet actual weekly spend history. Phase 5/6 must replace this with list/trip snapshots once completed shopping is implemented.
 
+### Pantry updates from shopping
+
+Decision: marking a shopping item as purchased should synchronize that item into pantry stock. The sync must be idempotent and reversible while the shopping line remains editable.
+
+Reason: users expect bought groceries to become available pantry stock, but repeated toggles or edits must not duplicate inventory.
+
+Impact: shopping items will store the pantry quantity/name/unit currently applied. Updating or unchecking a purchased item can then subtract the previous pantry contribution before applying the new one.
+
+### Grocery price strategy
+
+Decision: price estimates should be manual-first, then remembered in a local user-owned price memory by item, unit, brand and store. External APIs are deferred until the core workflows are stable.
+
+Reason: supermarket APIs are fragmented, country/store-specific, often incomplete, and may have usage/terms constraints. A local price memory gives useful automatic estimates quickly from the user's own shopping history without adding integration risk.
+
+Impact: the next pricing slice should introduce a `PriceEstimate` or `PriceObservation` model populated from shopping entries. When users add a grocery item or generated planned item, the app can suggest or auto-fill the most recent matching price for that store/brand. Public/store APIs can be evaluated later as optional import sources.
+
 ## Proposed Decisions for Later Phases
 
 ### Ingredient estimates

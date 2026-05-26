@@ -31,6 +31,14 @@ class ShoppingItem(models.Model):
     store = models.CharField(max_length=120, blank=True, null=True, default="")
     source = models.CharField(max_length=16, choices=Source.choices, default=Source.MANUAL)
     purchased = models.BooleanField(default=False)
+    pantry_synced_quantity = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal("0.00"),
+        validators=[MinValueValidator(Decimal("0"))],
+    )
+    pantry_synced_name = models.CharField(max_length=160, blank=True, default="")
+    pantry_synced_unit = models.CharField(max_length=8, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

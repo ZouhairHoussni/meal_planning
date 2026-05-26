@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from pantry.services import sync_shopping_item_to_pantry
+
 from .forms import ManualShoppingItemForm, ShoppingItemUpdateForm
 from .models import ShoppingItem
 from .selectors import shopping_summary_for_user
@@ -41,6 +43,7 @@ def shopping_toggle(request, pk):
     if request.method == "POST":
         item.purchased = not item.purchased
         item.save(update_fields=["purchased", "updated_at"])
+        sync_shopping_item_to_pantry(item)
     return redirect("shopping")
 
 
@@ -50,5 +53,7 @@ def shopping_update(request, pk):
     if request.method == "POST":
         form = ShoppingItemUpdateForm(request.POST, instance=item)
         if form.is_valid():
-            form.save()
+            item = form.save()
+            if item.purchased or item.pantry_synced_quantity:
+                sync_shopping_item_to_pantry(item)
     return redirect("shopping")

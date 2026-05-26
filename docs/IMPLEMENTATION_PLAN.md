@@ -156,7 +156,7 @@ Key build order:
 Partial status:
 
 - A basic pantry page exists and is clickable.
-- Pantry deduction from shopping is not yet implemented.
+- Pantry updates from purchased shopping items are the next active slice.
 - Planned recipe components sync into shopping items.
 
 ### Phase 5: Mobile Shopping Mode and Actual Spend
