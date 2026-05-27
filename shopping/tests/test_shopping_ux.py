@@ -17,6 +17,9 @@ def test_shopping_page_uses_phone_first_shop_mode_sections(client, django_user_m
     assert response.status_code == 200
     assert "Shop mode" in content
     assert "Quick add" in content
+    assert 'data-shopping-quick-add-panel' in content
+    assert 'data-shopping-quick-add-toggle' in content
+    assert "hidden md:block" in content
     assert "Still to buy" in content
     assert "Already in pantry" in content
     assert "Edit item details" in content

@@ -34,42 +34,65 @@
       </div>
     </section>
 
-    <section class="sticky top-16 z-10 -mx-4 border-y border-border bg-canvas/95 px-4 py-3 backdrop-blur sm:top-3 sm:mx-0 sm:mt-5 sm:rounded-lg sm:border lg:top-3">
-      <form class="grid gap-3 md:grid-cols-[1.4fr_90px_100px_110px_1fr_1fr_auto] md:items-end" method="post" action="{% url 'shopping_add_manual' %}">
+    <section class="shopping-quick-add -mx-4 border-y border-border bg-canvas/95 px-4 py-3 backdrop-blur sm:mx-0 sm:mt-5 sm:rounded-lg sm:border md:sticky md:top-3 md:z-10">
+      <button class="btn-primary w-full md:hidden" type="button" data-shopping-quick-add-toggle aria-expanded="false" aria-controls="shopping-quick-add-panel">
+        Add grocery item
+      </button>
+
+      <form id="shopping-quick-add-panel" class="hidden md:block" data-shopping-quick-add-panel method="post" action="{% url 'shopping_add_manual' %}">
         {% csrf_token %}
-        <div class="md:col-span-7">
+        <div class="mt-3 grid gap-3 md:mt-0 md:grid-cols-[1.4fr_90px_100px_110px_1fr_1fr_auto] md:items-end">
+          <div class="md:col-span-7">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="section-title text-base">Quick add</h2>
+              <button class="btn-secondary min-h-11 px-3 py-1 text-xs md:hidden" type="button" data-shopping-quick-add-close>Close</button>
+            </div>
+          </div>
+          <div>
+            <label class="sr-only">Item</label>
+            <input class="shopping-input" name="{{ manual_form.name.html_name }}" placeholder="Add item..." required>
+          </div>
+          <div>
+            <label class="sr-only">Quantity</label>
+            <input class="shopping-input" name="{{ manual_form.quantity.html_name }}" placeholder="Qty" inputmode="decimal" required>
+          </div>
+          <div>
+            <label class="sr-only">Unit</label>
+            <select class="shopping-input" name="{{ manual_form.unit.html_name }}">
+              {% for value, label in manual_form.unit.field.choices %}
+                <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="sr-only">Price</label>
+            <input class="shopping-input" name="{{ manual_form.price.html_name }}" placeholder="EUR" inputmode="decimal">
+          </div>
+          <div>
+            <label class="sr-only">Brand</label>
+            <input class="shopping-input" name="{{ manual_form.brand.html_name }}" placeholder="Brand">
+          </div>
+          <div>
+            <label class="sr-only">Store</label>
+            <input class="shopping-input" name="{{ manual_form.store.html_name }}" placeholder="Store">
+          </div>
+          <button class="btn-primary" type="submit">Add</button>
+        </div>
+      </form>
+      <noscript>
+        <form class="mt-3 grid gap-3" method="post" action="{% url 'shopping_add_manual' %}">
+          {% csrf_token %}
           <h2 class="section-title text-base">Quick add</h2>
-        </div>
-        <div>
-          <label class="sr-only">Item</label>
           <input class="shopping-input" name="{{ manual_form.name.html_name }}" placeholder="Add item..." required>
-        </div>
-        <div>
-          <label class="sr-only">Quantity</label>
           <input class="shopping-input" name="{{ manual_form.quantity.html_name }}" placeholder="Qty" inputmode="decimal" required>
-        </div>
-        <div>
-          <label class="sr-only">Unit</label>
           <select class="shopping-input" name="{{ manual_form.unit.html_name }}">
             {% for value, label in manual_form.unit.field.choices %}
               <option value="{{ value }}">{{ label }}</option>
             {% endfor %}
           </select>
-        </div>
-        <div>
-          <label class="sr-only">Price</label>
-          <input class="shopping-input" name="{{ manual_form.price.html_name }}" placeholder="EUR" inputmode="decimal">
-        </div>
-        <div>
-          <label class="sr-only">Brand</label>
-          <input class="shopping-input" name="{{ manual_form.brand.html_name }}" placeholder="Brand">
-        </div>
-        <div>
-          <label class="sr-only">Store</label>
-          <input class="shopping-input" name="{{ manual_form.store.html_name }}" placeholder="Store">
-        </div>
-        <button class="btn-primary" type="submit">Add</button>
-      </form>
+          <button class="btn-primary" type="submit">Add</button>
+        </form>
+      </noscript>
     </section>
 
     <section class="mt-6">
