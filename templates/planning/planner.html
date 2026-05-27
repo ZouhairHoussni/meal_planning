@@ -83,7 +83,7 @@
                         <form method="post" action="{% url 'planner_delete' meal.id %}">
                           {% csrf_token %}
                           <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
-                          <button class="btn-danger min-h-10 px-3 py-1 text-xs" type="submit">Remove</button>
+                          <button class="btn-danger min-h-11 px-3 py-1 text-xs" type="submit">Remove</button>
                         </form>
                       </article>
                     {% empty %}
@@ -139,7 +139,7 @@
                         <form method="post" action="{% url 'planner_delete' meal.id %}">
                           {% csrf_token %}
                           <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
-                          <button class="btn-danger min-h-9 px-2 py-1 text-xs" type="submit">Remove</button>
+                          <button class="btn-danger min-h-11 px-2 py-1 text-xs" type="submit">Remove</button>
                         </form>
                       </article>
                     {% empty %}
@@ -210,7 +210,7 @@
           <h2 class="mt-1 text-2xl font-black text-text" id="planner-sheet-title">Choose a recipe</h2>
           <p class="mt-1 text-sm font-semibold text-text-muted" data-planner-sheet-subtitle>Pick a destination first.</p>
         </div>
-        <button class="btn-secondary min-h-10 px-3 py-1 text-xs" type="button" data-planner-close>Close</button>
+        <button class="btn-secondary min-h-11 px-3 py-1 text-xs" type="button" data-planner-close>Close</button>
       </div>
 
       <label class="field-label mt-5" for="planner-recipe-search">Find a recipe</label>

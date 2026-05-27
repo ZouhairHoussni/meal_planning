@@ -8,7 +8,7 @@ def test_brand_tokens_are_defined_in_base_template():
     content = (ROOT / "templates" / "base.html").read_text()
 
     assert "#2563EB" in content
-    assert "#F7C948" in content
+    assert "#F4B740" in content
     assert "primary-soft" in content
     assert "canvas" in content
 
