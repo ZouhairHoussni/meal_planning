@@ -20,7 +20,7 @@ RecipeComponentFormSet = inlineformset_factory(
     Recipe,
     RecipeComponent,
     form=RecipeComponentForm,
-    extra=3,
+    extra=0,
     can_delete=True,
     min_num=1,
     validate_min=True,

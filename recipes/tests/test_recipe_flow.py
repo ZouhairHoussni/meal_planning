@@ -55,6 +55,26 @@ def test_recipe_form_uses_meal_language_and_has_add_component_control(client, dj
     content = response.content.decode()
     assert "Create meal" in content
     assert "Add component" in content
+    assert content.count('data-component-row="live"') == 1
+    assert "data-component-summary" in content
+    assert "data-component-body" in content
+
+
+@pytest.mark.django_db
+def test_recipe_edit_renders_existing_components_as_collapsible_rows(client, django_user_model):
+    user = django_user_model.objects.create_user(username="component-accordion", password="test-pass-123")
+    recipe = Recipe.objects.create(owner=user, name="Pasta")
+    RecipeComponent.objects.create(recipe=recipe, name="Pasta", quantity="250", unit="g")
+    RecipeComponent.objects.create(recipe=recipe, name="Tomato sauce", quantity="1", unit="unit")
+    client.force_login(user)
+
+    response = client.get(reverse("recipe_edit", kwargs={"pk": recipe.pk}))
+
+    content = response.content.decode()
+    assert response.status_code == 200
+    assert content.count('data-component-row="live"') == 2
+    assert "Pasta" in content
+    assert "Tomato sauce" in content
 
 
 @pytest.mark.django_db

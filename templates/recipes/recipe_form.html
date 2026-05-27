@@ -41,45 +41,54 @@
         {{ formset.management_form }}
         <div class="mt-5 space-y-3" id="component-formset">
           {% for component_form in formset %}
-            <div class="component-row rounded-lg border border-border bg-surface-muted/70 p-3">
+            <div class="component-row overflow-hidden rounded-lg border border-border bg-surface-muted/70" data-component-row="live">
               {{ component_form.id }}
-              <div class="grid gap-3 lg:grid-cols-[1fr_110px_100px_1fr_1fr_1fr]">
-                <div>
-                  <label class="field-label text-xs" for="{{ component_form.name.id_for_label }}">Item</label>
-                  <input class="input mt-1" id="{{ component_form.name.id_for_label }}" name="{{ component_form.name.html_name }}" value="{{ component_form.name.value|default_if_none:'' }}">
+              <button class="component-summary" type="button" data-component-summary aria-expanded="true">
+                <span class="min-w-0">
+                  <span class="block truncate font-black text-text" data-component-summary-title>{{ component_form.name.value|default:"New component" }}</span>
+                  <span class="block text-sm font-semibold text-text-muted" data-component-summary-meta>Tap to edit details</span>
+                </span>
+                <span class="mini-chip">Edit</span>
+              </button>
+              <div class="component-body p-3 pt-0" data-component-body>
+                <div class="grid gap-3 lg:grid-cols-[1fr_110px_100px_1fr_1fr_1fr]">
+                  <div>
+                    <label class="field-label text-xs" for="{{ component_form.name.id_for_label }}">Item</label>
+                    <input class="input mt-1" id="{{ component_form.name.id_for_label }}" name="{{ component_form.name.html_name }}" value="{{ component_form.name.value|default_if_none:'' }}">
+                  </div>
+                  <div>
+                    <label class="field-label text-xs" for="{{ component_form.quantity.id_for_label }}">Qty</label>
+                    <input class="input mt-1" id="{{ component_form.quantity.id_for_label }}" name="{{ component_form.quantity.html_name }}" value="{{ component_form.quantity.value|default_if_none:'' }}" inputmode="decimal">
+                  </div>
+                  <div>
+                    <label class="field-label text-xs" for="{{ component_form.unit.id_for_label }}">Unit</label>
+                    <select class="select mt-1" id="{{ component_form.unit.id_for_label }}" name="{{ component_form.unit.html_name }}">
+                      {% for value, label in component_form.unit.field.choices %}
+                        <option value="{{ value }}" {% if component_form.unit.value == value %}selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div>
+                    <label class="field-label text-xs" for="{{ component_form.brand.id_for_label }}">Brand</label>
+                    <input class="input mt-1" id="{{ component_form.brand.id_for_label }}" name="{{ component_form.brand.html_name }}" value="{{ component_form.brand.value|default_if_none:'' }}">
+                  </div>
+                  <div>
+                    <label class="field-label text-xs" for="{{ component_form.store.id_for_label }}">Store</label>
+                    <input class="input mt-1" id="{{ component_form.store.id_for_label }}" name="{{ component_form.store.html_name }}" value="{{ component_form.store.value|default_if_none:'' }}">
+                  </div>
+                  <div>
+                    <label class="field-label text-xs" for="{{ component_form.note.id_for_label }}">Note</label>
+                    <input class="input mt-1" id="{{ component_form.note.id_for_label }}" name="{{ component_form.note.html_name }}" value="{{ component_form.note.value|default_if_none:'' }}">
+                  </div>
                 </div>
-                <div>
-                  <label class="field-label text-xs" for="{{ component_form.quantity.id_for_label }}">Qty</label>
-                  <input class="input mt-1" id="{{ component_form.quantity.id_for_label }}" name="{{ component_form.quantity.html_name }}" value="{{ component_form.quantity.value|default_if_none:'' }}" inputmode="decimal">
-                </div>
-                <div>
-                  <label class="field-label text-xs" for="{{ component_form.unit.id_for_label }}">Unit</label>
-                  <select class="select mt-1" id="{{ component_form.unit.id_for_label }}" name="{{ component_form.unit.html_name }}">
-                    {% for value, label in component_form.unit.field.choices %}
-                      <option value="{{ value }}" {% if component_form.unit.value == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-                <div>
-                  <label class="field-label text-xs" for="{{ component_form.brand.id_for_label }}">Brand</label>
-                  <input class="input mt-1" id="{{ component_form.brand.id_for_label }}" name="{{ component_form.brand.html_name }}" value="{{ component_form.brand.value|default_if_none:'' }}">
-                </div>
-                <div>
-                  <label class="field-label text-xs" for="{{ component_form.store.id_for_label }}">Store</label>
-                  <input class="input mt-1" id="{{ component_form.store.id_for_label }}" name="{{ component_form.store.html_name }}" value="{{ component_form.store.value|default_if_none:'' }}">
-                </div>
-                <div>
-                  <label class="field-label text-xs" for="{{ component_form.note.id_for_label }}">Note</label>
-                  <input class="input mt-1" id="{{ component_form.note.id_for_label }}" name="{{ component_form.note.html_name }}" value="{{ component_form.note.value|default_if_none:'' }}">
-                </div>
+                {% if component_form.DELETE %}
+                  <label class="mt-3 flex min-h-11 items-center gap-2 text-sm font-semibold text-text-muted">
+                    {{ component_form.DELETE }}
+                    Remove this component
+                  </label>
+                {% endif %}
+                {% if component_form.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ component_form.errors|striptags }}</p>{% endif %}
               </div>
-              {% if component_form.DELETE %}
-                <label class="mt-3 flex min-h-11 items-center gap-2 text-sm font-semibold text-text-muted">
-                  {{ component_form.DELETE }}
-                  Remove this component
-                </label>
-              {% endif %}
-              {% if component_form.errors %}<p class="mt-2 text-sm font-semibold text-danger">{{ component_form.errors|striptags }}</p>{% endif %}
             </div>
           {% endfor %}
         </div>
@@ -93,36 +102,45 @@
   </div>
 
   <template id="component-empty-form">
-    <div class="component-row rounded-lg border border-border bg-surface-muted/70 p-3">
+    <div class="component-row overflow-hidden rounded-lg border border-border bg-surface-muted/70" data-component-row="template">
       {{ formset.empty_form.id }}
-      <div class="grid gap-3 lg:grid-cols-[1fr_110px_100px_1fr_1fr_1fr]">
-        <div>
-          <label class="field-label text-xs" for="{{ formset.empty_form.name.id_for_label }}">Item</label>
-          <input class="input mt-1" id="{{ formset.empty_form.name.id_for_label }}" name="{{ formset.empty_form.name.html_name }}">
-        </div>
-        <div>
-          <label class="field-label text-xs" for="{{ formset.empty_form.quantity.id_for_label }}">Qty</label>
-          <input class="input mt-1" id="{{ formset.empty_form.quantity.id_for_label }}" name="{{ formset.empty_form.quantity.html_name }}" inputmode="decimal">
-        </div>
-        <div>
-          <label class="field-label text-xs" for="{{ formset.empty_form.unit.id_for_label }}">Unit</label>
-          <select class="select mt-1" id="{{ formset.empty_form.unit.id_for_label }}" name="{{ formset.empty_form.unit.html_name }}">
-            {% for value, label in formset.empty_form.unit.field.choices %}
-              <option value="{{ value }}">{{ label }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div>
-          <label class="field-label text-xs" for="{{ formset.empty_form.brand.id_for_label }}">Brand</label>
-          <input class="input mt-1" id="{{ formset.empty_form.brand.id_for_label }}" name="{{ formset.empty_form.brand.html_name }}">
-        </div>
-        <div>
-          <label class="field-label text-xs" for="{{ formset.empty_form.store.id_for_label }}">Store</label>
-          <input class="input mt-1" id="{{ formset.empty_form.store.id_for_label }}" name="{{ formset.empty_form.store.html_name }}">
-        </div>
-        <div>
-          <label class="field-label text-xs" for="{{ formset.empty_form.note.id_for_label }}">Note</label>
-          <input class="input mt-1" id="{{ formset.empty_form.note.id_for_label }}" name="{{ formset.empty_form.note.html_name }}">
+      <button class="component-summary" type="button" data-component-summary aria-expanded="true">
+        <span class="min-w-0">
+          <span class="block truncate font-black text-text" data-component-summary-title>New component</span>
+          <span class="block text-sm font-semibold text-text-muted" data-component-summary-meta>Tap to edit details</span>
+        </span>
+        <span class="mini-chip">Edit</span>
+      </button>
+      <div class="component-body p-3 pt-0" data-component-body>
+        <div class="grid gap-3 lg:grid-cols-[1fr_110px_100px_1fr_1fr_1fr]">
+          <div>
+            <label class="field-label text-xs" for="{{ formset.empty_form.name.id_for_label }}">Item</label>
+            <input class="input mt-1" id="{{ formset.empty_form.name.id_for_label }}" name="{{ formset.empty_form.name.html_name }}">
+          </div>
+          <div>
+            <label class="field-label text-xs" for="{{ formset.empty_form.quantity.id_for_label }}">Qty</label>
+            <input class="input mt-1" id="{{ formset.empty_form.quantity.id_for_label }}" name="{{ formset.empty_form.quantity.html_name }}" inputmode="decimal">
+          </div>
+          <div>
+            <label class="field-label text-xs" for="{{ formset.empty_form.unit.id_for_label }}">Unit</label>
+            <select class="select mt-1" id="{{ formset.empty_form.unit.id_for_label }}" name="{{ formset.empty_form.unit.html_name }}">
+              {% for value, label in formset.empty_form.unit.field.choices %}
+                <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="field-label text-xs" for="{{ formset.empty_form.brand.id_for_label }}">Brand</label>
+            <input class="input mt-1" id="{{ formset.empty_form.brand.id_for_label }}" name="{{ formset.empty_form.brand.html_name }}">
+          </div>
+          <div>
+            <label class="field-label text-xs" for="{{ formset.empty_form.store.id_for_label }}">Store</label>
+            <input class="input mt-1" id="{{ formset.empty_form.store.id_for_label }}" name="{{ formset.empty_form.store.html_name }}">
+          </div>
+          <div>
+            <label class="field-label text-xs" for="{{ formset.empty_form.note.id_for_label }}">Note</label>
+            <input class="input mt-1" id="{{ formset.empty_form.note.id_for_label }}" name="{{ formset.empty_form.note.html_name }}">
+          </div>
         </div>
       </div>
     </div>

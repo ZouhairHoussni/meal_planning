@@ -348,6 +348,29 @@ input[type="checkbox"] {
   padding: 1.5rem;
 }
 
+.component-summary {
+  display: flex;
+  min-height: 4rem;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  text-align: left;
+}
+
+.component-summary:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.component-row-collapsed {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.component-row-collapsed [data-component-body] {
+  display: none;
+}
+
 .planner-header,
 .planner-day-panel,
 .planner-week-day,
