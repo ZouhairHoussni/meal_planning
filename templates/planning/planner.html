@@ -4,96 +4,247 @@
 {% block title %}Planner - MealBudget{% endblock %}
 
 {% block content %}
-  <section class="page-hero">
-    <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <p class="eyebrow">Planner</p>
-        <h1 class="page-title mt-2">Build the week</h1>
-        <p class="mt-3 max-w-2xl muted-copy">Drag recipes on desktop, or use the quick add form on mobile. Breakfast, lunch, dinner and extras all count.</p>
+  <section class="planner-header">
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <p class="eyebrow">Meal Planner</p>
+        <h1 class="mt-1 text-3xl font-black leading-tight text-text sm:text-4xl">Plan the week</h1>
+        <p class="mt-2 text-sm font-semibold text-text-muted">{{ week_label }}</p>
       </div>
-      <a class="btn-primary" href="{% url 'recipe_new' %}">Create meal</a>
+      <div class="flex shrink-0 gap-2">
+        <a class="planner-week-button" href="{% url 'planner' %}?week={{ previous_week|date:'Y-m-d' }}&day={{ previous_week|date:'Y-m-d' }}" aria-label="Previous week">Prev</a>
+        <a class="planner-week-button" href="{% url 'planner' %}?week={{ next_week|date:'Y-m-d' }}&day={{ next_week|date:'Y-m-d' }}" aria-label="Next week">Next</a>
+      </div>
     </div>
   </section>
 
-  <div class="mt-5 grid gap-5 xl:grid-cols-[330px_1fr] xl:items-start">
-    <aside class="space-y-4 xl:sticky xl:top-6">
-      <section class="app-card">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <p class="eyebrow">Meal bank</p>
-            <h2 class="section-title mt-1">Ready recipes</h2>
-          </div>
-          <span class="mini-chip">{{ recipes|length }} meals</span>
-        </div>
-        <div class="mt-4 grid gap-3" id="recipe-bank">
-          {% for recipe in recipes %}
-            <div draggable="true" data-recipe-id="{{ recipe.id }}" class="cursor-grab rounded-lg border border-border bg-surface-muted/80 p-4 shadow-sm transition hover:border-primary hover:bg-white active:cursor-grabbing">
-              <p class="font-black text-text">{{ recipe.name }}</p>
-              <p class="mt-1 text-sm text-text-muted">{{ recipe.components.count }} components</p>
-            </div>
-          {% empty %}
-            <div class="empty-state">
-              <h3 class="text-lg font-black text-text">Create a recipe first</h3>
-              <p class="mt-2 text-sm text-text-muted">Meals appear here as draggable cards.</p>
-            </div>
-          {% endfor %}
-        </div>
-      </section>
+  <nav class="planner-day-strip mt-4 md:mt-5" aria-label="Planner days">
+    {% for day in week_rows %}
+      <button
+        class="planner-day-tab"
+        type="button"
+        data-planner-day-tab="{{ day.date|date:'Y-m-d' }}"
+        aria-selected="{% if day.date == selected_day %}true{% else %}false{% endif %}"
+      >
+        <span class="text-xs font-black uppercase tracking-[0.12em]">{{ day.date|date:"D" }}</span>
+        <span class="mt-1 text-xl font-black leading-none">{{ day.date|date:"j" }}</span>
+      </button>
+    {% endfor %}
+  </nav>
 
-      <form class="form-panel" method="post" action="{% url 'planner_add' %}">
-        {% csrf_token %}
-        <p class="eyebrow">Quick add</p>
-        <h2 class="section-title mt-1">Place a meal</h2>
-        <div class="mt-4 space-y-3">
-          {{ form.recipe }}
-          {{ form.date }}
-          {{ form.meal_type }}
-          <input class="input" name="{{ form.note.html_name }}" placeholder="Optional note">
-          <button class="btn-primary w-full" type="submit">Add meal</button>
-        </div>
-      </form>
-    </aside>
-
+  <div class="mt-5 grid gap-5 xl:grid-cols-[1fr_300px] xl:items-start">
     <section class="min-w-0">
-      <div class="flex gap-4 overflow-x-auto pb-3 lg:grid lg:grid-cols-7 lg:overflow-visible lg:pb-0">
+      <div class="md:hidden">
         {% for day in week_rows %}
-          <article class="app-card min-w-[285px] lg:min-w-0">
+          <article
+            class="planner-day-panel"
+            data-planner-day-panel="{{ day.date|date:'Y-m-d' }}"
+            {% if day.date != selected_day %}hidden{% endif %}
+          >
             <div class="flex items-center justify-between gap-3">
-              <h2 class="font-black text-text">{{ day.date|date:"D d M" }}</h2>
-              <span class="mini-chip">{{ day.slots|length }} slots</span>
+              <div>
+                <p class="eyebrow">Selected day</p>
+                <h2 class="mt-1 text-2xl font-black text-text">{{ day.date|date:"l j F" }}</h2>
+              </div>
+              <span class="mini-chip">{{ day.date|date:"D" }}</span>
             </div>
             <div class="mt-4 space-y-3">
               {% for slot in day.slots %}
-                <div class="planner-drop rounded-lg border border-dashed border-primary/30 bg-primary-soft/50 p-3" data-date="{{ day.date|date:'Y-m-d' }}" data-meal-type="{{ slot.type }}">
-                  <p class="text-xs font-black uppercase tracking-[0.14em] text-primary">{{ slot.label }}</p>
+                <section class="planner-slot planner-drop" data-date="{{ day.date|date:'Y-m-d' }}" data-meal-type="{{ slot.type }}">
+                  <div class="flex items-center justify-between gap-3">
+                    <h3 class="text-sm font-black uppercase tracking-[0.14em] text-primary">{{ slot.label }}</h3>
+                    <button
+                      class="planner-slot-add"
+                      type="button"
+                      data-planner-add-trigger
+                      data-date="{{ day.date|date:'Y-m-d' }}"
+                      data-date-label="{{ day.date|date:'l j F' }}"
+                      data-meal-type="{{ slot.type }}"
+                      data-meal-label="{{ slot.label|lower }}"
+                      data-next="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}"
+                    >
+                      + Add {{ slot.label|lower }}
+                    </button>
+                  </div>
                   <form class="planner-drop-form" method="post" action="{% url 'planner_add' %}">
                     {% csrf_token %}
                     <input type="hidden" name="date" value="{{ day.date|date:'Y-m-d' }}">
                     <input type="hidden" name="meal_type" value="{{ slot.type }}">
                     <input type="hidden" name="recipe" value="">
+                    <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
+                  </form>
+                  <div class="mt-3 space-y-2">
+                    {% for meal in slot.meals %}
+                      <article class="planner-meal-card">
+                        <div class="min-w-0">
+                          <p class="truncate text-base font-black text-text">{{ meal.recipe.name }}</p>
+                          {% if meal.note %}<p class="mt-1 text-sm text-text-muted">{{ meal.note }}</p>{% endif %}
+                        </div>
+                        <form method="post" action="{% url 'planner_delete' meal.id %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
+                          <button class="btn-danger min-h-10 px-3 py-1 text-xs" type="submit">Remove</button>
+                        </form>
+                      </article>
+                    {% empty %}
+                      <p class="planner-empty-slot">No meal yet</p>
+                    {% endfor %}
+                  </div>
+                </section>
+              {% endfor %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      <div class="hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-3">
+        {% for day in week_rows %}
+          <article class="planner-week-day">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <p class="eyebrow">{{ day.date|date:"D" }}</p>
+                <h2 class="mt-1 truncate text-xl font-black text-text">{{ day.date|date:"j M" }}</h2>
+              </div>
+              <span class="mini-chip">{{ day.slots|length }}</span>
+            </div>
+            <div class="mt-4 space-y-3">
+              {% for slot in day.slots %}
+                <section class="planner-slot planner-drop" data-date="{{ day.date|date:'Y-m-d' }}" data-meal-type="{{ slot.type }}">
+                  <div class="flex items-center justify-between gap-2">
+                    <h3 class="text-xs font-black uppercase tracking-[0.14em] text-primary">{{ slot.label }}</h3>
+                    <button
+                      class="planner-slot-add planner-slot-add-compact"
+                      type="button"
+                      data-planner-add-trigger
+                      data-date="{{ day.date|date:'Y-m-d' }}"
+                      data-date-label="{{ day.date|date:'l j F' }}"
+                      data-meal-type="{{ slot.type }}"
+                      data-meal-label="{{ slot.label|lower }}"
+                      data-next="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <form class="planner-drop-form" method="post" action="{% url 'planner_add' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="date" value="{{ day.date|date:'Y-m-d' }}">
+                    <input type="hidden" name="meal_type" value="{{ slot.type }}">
+                    <input type="hidden" name="recipe" value="">
+                    <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
                   </form>
                   <div class="mt-2 space-y-2">
                     {% for meal in slot.meals %}
-                      <div class="rounded-lg border border-border bg-white px-3 py-3 shadow-sm">
-                        <p class="text-sm font-black text-text">{{ meal.recipe.name }}</p>
-                        {% if meal.note %}<p class="mt-1 text-xs text-text-muted">{{ meal.note }}</p>{% endif %}
-                        <form class="mt-2" method="post" action="{% url 'planner_delete' meal.id %}">
+                      <article class="planner-meal-card planner-meal-card-compact">
+                        <p class="min-w-0 truncate text-sm font-black text-text">{{ meal.recipe.name }}</p>
+                        <form method="post" action="{% url 'planner_delete' meal.id %}">
                           {% csrf_token %}
-                          <button class="btn-danger min-h-9 px-3 py-1 text-xs" type="submit">Remove</button>
+                          <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
+                          <button class="btn-danger min-h-9 px-2 py-1 text-xs" type="submit">Remove</button>
                         </form>
-                      </div>
+                      </article>
                     {% empty %}
-                      <p class="rounded-lg bg-white/80 px-3 py-5 text-center text-sm font-semibold text-text-muted">Drop or quick-add here</p>
+                      <p class="planner-empty-slot">Open</p>
                     {% endfor %}
                   </div>
-                </div>
+                </section>
               {% endfor %}
             </div>
           </article>
         {% endfor %}
       </div>
     </section>
+
+    <aside class="hidden space-y-4 xl:block">
+      <section class="app-card">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="eyebrow">Desktop shelf</p>
+            <h2 class="section-title mt-1 text-lg">Drag meals</h2>
+          </div>
+          <span class="mini-chip">{{ recipes|length }}</span>
+        </div>
+        <div class="mt-4 grid gap-3" id="recipe-bank">
+          {% for recipe in recipes %}
+            <div draggable="true" data-recipe-id="{{ recipe.id }}" class="cursor-grab rounded-lg border border-border bg-surface-muted/80 p-3 shadow-sm transition hover:border-primary hover:bg-white active:cursor-grabbing">
+              <p class="font-black text-text">{{ recipe.name }}</p>
+              <p class="mt-1 text-sm text-text-muted">{{ recipe.components.count }} components</p>
+            </div>
+          {% empty %}
+            <div class="empty-state p-4">
+              <h3 class="text-base font-black text-text">No recipes yet</h3>
+              <a class="btn-primary mt-3 w-full" href="{% url 'recipe_new' %}">Create meal</a>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    </aside>
   </div>
+
+  <details class="app-card mt-5">
+    <summary class="cursor-pointer text-sm font-black text-primary">Advanced quick add</summary>
+    <form class="mt-4 grid gap-3 md:grid-cols-[1.2fr_160px_160px_1fr_auto]" method="post" action="{% url 'planner_add' %}">
+      {% csrf_token %}
+      {{ form.recipe }}
+      {{ form.date }}
+      {{ form.meal_type }}
+      <input class="input" name="{{ form.note.html_name }}" placeholder="Optional note">
+      <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ selected_day|date:'Y-m-d' }}">
+      <button class="btn-secondary" type="submit">Add</button>
+    </form>
+  </details>
+
+  <div class="planner-mobile-action md:hidden">
+    <button class="btn-primary w-full" type="button" data-planner-add-current>+ Add meal</button>
+  </div>
+
+  <div class="planner-sheet-backdrop hidden" data-planner-overlay></div>
+  <aside class="planner-sheet hidden" data-planner-sheet aria-hidden="true" aria-labelledby="planner-sheet-title">
+    <form method="post" action="{% url 'planner_add' %}" data-planner-sheet-form>
+      {% csrf_token %}
+      <input type="hidden" name="date" data-planner-date-input>
+      <input type="hidden" name="meal_type" data-planner-meal-type-input>
+      <input type="hidden" name="next" data-planner-next-input>
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <p class="eyebrow">Add meal to slot</p>
+          <h2 class="mt-1 text-2xl font-black text-text" id="planner-sheet-title">Choose a recipe</h2>
+          <p class="mt-1 text-sm font-semibold text-text-muted" data-planner-sheet-subtitle>Pick a destination first.</p>
+        </div>
+        <button class="btn-secondary min-h-10 px-3 py-1 text-xs" type="button" data-planner-close>Close</button>
+      </div>
+
+      <label class="field-label mt-5" for="planner-recipe-search">Find a recipe</label>
+      <input class="input mt-2" id="planner-recipe-search" type="search" placeholder="Search meals..." data-planner-recipe-search>
+
+      <label class="field-label mt-4" for="planner-note">Note</label>
+      <input class="input mt-2" id="planner-note" name="note" placeholder="Optional note">
+
+      <div class="mt-5 max-h-[42vh] space-y-2 overflow-y-auto pr-1">
+        {% for recipe in recipes %}
+          <button
+            class="planner-recipe-option"
+            type="submit"
+            name="recipe"
+            value="{{ recipe.id }}"
+            data-planner-recipe-option
+            data-recipe-name="{{ recipe.name|lower }}"
+          >
+            <span>
+              <span class="block text-left font-black text-text">{{ recipe.name }}</span>
+              <span class="block text-left text-sm text-text-muted">{{ recipe.components.count }} components</span>
+            </span>
+            <span class="mini-chip">Add</span>
+          </button>
+        {% empty %}
+          <div class="empty-state">
+            <h3 class="text-lg font-black text-text">Create your first meal</h3>
+            <p class="mt-2 text-sm text-text-muted">Recipes appear here when you add them.</p>
+            <a class="btn-primary mt-4 w-full" href="{% url 'recipe_new' %}">Create meal</a>
+          </div>
+        {% endfor %}
+      </div>
+    </form>
+  </aside>
 {% endblock %}
 
 {% block extra_scripts %}

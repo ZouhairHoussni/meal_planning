@@ -9,7 +9,7 @@ from households.models import Household
     "route_name, expected_text",
     [
         ("recipe_list", "Recipe library"),
-        ("planner", "Drag recipes"),
+        ("planner", "Meal Planner"),
         ("shopping", "Shopping list"),
         ("pantry", "What you have at home"),
     ],

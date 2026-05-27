@@ -56,6 +56,29 @@ Testing expectations:
 - Keep design-token regression tests so the UI cannot silently fall back to the old monochrome baseline.
 - Use browser screenshots for visual review whenever the local browser tooling is available; otherwise run live route smoke checks and document the tooling blocker.
 
+### Planner Slot-First UX Refactor
+
+Status: in progress on 2026-05-27.
+
+Goal: make `/planner/` feel natural on phones by changing the interaction model from "fill a separate quick-add form" to "choose the slot first, then choose a recipe".
+
+Planned changes:
+
+- Keep existing `PlannedMeal`, `planner_add`, `planner_delete`, recipe queries and shopping sync logic.
+- Add compact week navigation and a horizontal mobile day selector.
+- Show one selected day at a time on mobile, while desktop keeps a broader week overview.
+- Replace the dominant permanent quick-add panel with `+ Add breakfast/lunch/dinner/extra` controls inside each slot.
+- Open one shared add-meal panel as a mobile bottom sheet and desktop side drawer, prefilled with the tapped date and meal type.
+- Keep drag/drop as a desktop enhancement only, backed by the same hidden POST forms.
+- Keep a compact fallback form available below the planner, but visually secondary.
+- Preserve selected week/day after add and delete POSTs with a safe local `next` redirect.
+
+TDD focus:
+
+- Planner page renders the compact planner header, week range, day selector and slot-first add controls.
+- Add/delete POSTs can redirect safely back to the selected planner week/day.
+- Existing planner/shopping sync behavior remains unchanged.
+
 ### Phase 0: Repository Foundation and Design Shell
 
 Status: complete for the approved foundation slice.

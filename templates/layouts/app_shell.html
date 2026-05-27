@@ -12,12 +12,14 @@
       </a>
 
       <nav class="mt-10 space-y-2" aria-label="Primary">
-        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
-        <a href="{% url 'planner' %}" class="nav-link">Planner</a>
-        <a href="{% url 'shopping' %}" class="nav-link">Shopping</a>
-        <a href="{% url 'recipe_list' %}" class="nav-link">Recipes</a>
-        <a href="{% url 'pantry' %}" class="nav-link">Pantry</a>
-        <a href="{% url 'household_settings' %}" class="nav-link">Household</a>
+        {% with current=request.resolver_match.url_name %}
+          <a href="{% url 'dashboard' %}" class="nav-link" {% if current == "dashboard" %}aria-current="page"{% endif %}>Dashboard</a>
+          <a href="{% url 'planner' %}" class="nav-link" {% if current == "planner" %}aria-current="page"{% endif %}>Planner</a>
+          <a href="{% url 'shopping' %}" class="nav-link" {% if current == "shopping" %}aria-current="page"{% endif %}>Shopping</a>
+          <a href="{% url 'recipe_list' %}" class="nav-link" {% if current == "recipe_list" or current == "recipe_detail" or current == "recipe_new" or current == "recipe_edit" %}aria-current="page"{% endif %}>Recipes</a>
+          <a href="{% url 'pantry' %}" class="nav-link" {% if current == "pantry" %}aria-current="page"{% endif %}>Pantry</a>
+          <a href="{% url 'household_settings' %}" class="nav-link" {% if current == "household_settings" %}aria-current="page"{% endif %}>Household</a>
+        {% endwith %}
       </nav>
 
       <div class="mt-10 rounded-[1.5rem] border border-white/10 bg-white/10 p-4 text-sm leading-6 text-white/76">

@@ -187,6 +187,14 @@ Implementation: reusable tokens and component classes live in `templates/base.ht
 
 Impact: future templates should prefer these shared classes over page-specific Tailwind clusters. The app remains Django-rendered HTML with vanilla JavaScript and Tailwind CDN; no frontend framework or build pipeline was introduced.
 
+### Slot-first planner interaction
+
+Decision: the planner page should make meal slots the primary interaction target, especially on mobile. Users tap `+ Add breakfast`, `+ Add lunch`, `+ Add dinner` or `+ Add extra` inside the desired day slot, then choose a recipe from a shared add-meal panel.
+
+Reason: mobile users should not have to select date and meal type in a separate form after already deciding where the meal belongs. Destination-first planning reduces cognitive load and keeps thumb actions close to the relevant slot.
+
+Impact: the existing `planner_add` POST route remains authoritative and unchanged in shape. The UI pre-fills hidden date and meal type fields from the tapped slot. Drag-and-drop remains a desktop enhancement, but no longer drives the primary mobile workflow.
+
 ## Proposed Decisions for Later Phases
 
 ### Ingredient estimates
