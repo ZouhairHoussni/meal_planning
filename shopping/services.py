@@ -26,7 +26,11 @@ def sync_planned_shopping_items(user):
             }
 
     seen_keys = set(totals.keys())
-    for item in ShoppingItem.objects.filter(owner=user, source=ShoppingItem.Source.PLANNED):
+    for item in ShoppingItem.objects.filter(
+        owner=user,
+        source=ShoppingItem.Source.PLANNED,
+        purchased=False,
+    ):
         key = (item.name.strip().casefold(), item.unit, (item.brand or "").casefold(), (item.store or "").casefold())
         if key not in seen_keys:
             item.delete()
@@ -39,6 +43,7 @@ def sync_planned_shopping_items(user):
             ShoppingItem.objects.filter(
                 owner=user,
                 source=ShoppingItem.Source.PLANNED,
+                purchased=False,
                 unit=unit,
                 name__iexact=values["name"],
                 brand=values["brand"],

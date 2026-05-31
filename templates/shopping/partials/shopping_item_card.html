@@ -1,6 +1,6 @@
-<article class="shopping-item {% if is_done %}shopping-item-done{% endif %}">
+<article class="shopping-item {% if is_done %}shopping-item-done{% endif %}" data-shopping-item>
   <div class="flex gap-3">
-    <form method="post" action="{% url 'shopping_toggle' item.id %}">
+    <form method="post" action="{% url 'shopping_toggle' item.id %}" {% if not is_done %}data-shopping-purchase-form{% endif %}>
       {% csrf_token %}
       <button class="shopping-check {% if is_done %}shopping-check-done{% endif %}" type="submit" aria-label="{% if is_done %}Move {{ item.name }} back to shopping list{% else %}Mark {{ item.name }} as bought{% endif %}">
         {% if is_done %}
@@ -23,7 +23,7 @@
       <div class="mt-3 flex flex-wrap gap-2">
         {% if item.store %}<span class="shopping-chip bg-[#EAF3FF] text-[#1A4F7A]">{{ item.store }}</span>{% endif %}
         {% if item.brand %}<span class="shopping-chip bg-[#FFF0E6] text-[#8C4A1F]">{{ item.brand }}</span>{% endif %}
-        {% if is_done %}<span class="shopping-chip bg-[#EAF7EF] text-success">Pantry updated</span>{% endif %}
+        {% if is_done %}<span class="shopping-chip bg-[#E5E7EB] text-text-muted">Pantry updated - tap Done to undo</span>{% endif %}
       </div>
 
       <details class="mt-4">

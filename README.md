@@ -44,6 +44,16 @@ This repository has the Django/PostgreSQL foundation plus an early compact produ
 
 7. Visit `http://127.0.0.1:8000/dashboard/`.
 
+### Test From A Phone On The Same Wi-Fi
+
+Run the LAN launcher and keep its terminal window open:
+
+```powershell
+scripts\run_lan_server.cmd
+```
+
+Open the computer's current Wi-Fi address from the phone, for example `http://192.168.1.53:8000/`. The address can change when reconnecting to Wi-Fi; use `ipconfig` to find the current IPv4 address.
+
 ## Current Workflows
 
 - Sign up at `/accounts/signup/`.
@@ -52,6 +62,9 @@ This repository has the Django/PostgreSQL foundation plus an early compact produ
 - Create recipes at `/recipes/new/`.
 - Drag recipes into breakfast, lunch, dinner or extra slots at `/planner/`.
 - View generated planned shopping items and add manual groceries at `/shopping/`.
+- Mark groceries purchased to move them into pantry stock, reveal purchased items separately, and undo mistakes.
+- Confirm cooked planned meals before pantry ingredients are deducted; skipped and postponed meals do not change stock.
+- Undo cooked-meal pantry use or manually adjust stock quantities from `/pantry/`.
 - Add or edit optional price, brand and store on shopping items.
 - See known shopping spend totals, budget remaining, store spend and missing-price counts on Shopping and Dashboard.
 - Add pantry items at `/pantry/`.

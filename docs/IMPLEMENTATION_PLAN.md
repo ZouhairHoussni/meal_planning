@@ -232,6 +232,30 @@ Partial status:
 - The shopping page has a phone-first checklist UX with large tap targets, quick add, separated to-buy/done sections and inline item editing.
 - Actual prices, completed trips and immutable history are still pending.
 
+### Grocery-to-Pantry and Meal Consumption Workflow
+
+Status: in progress on 2026-05-31.
+
+Goal: close the real-world stock loop without treating plans as facts. Purchased groceries should leave the active shopping list, remain recoverable in a collapsed purchased section, and update pantry stock. Planned meals should consume pantry stock only after an explicit cooked confirmation.
+
+Build order:
+
+- Preserve purchased shopping lines during planner refresh so purchase history is not silently rewritten or deleted.
+- Add a collapsed `Show purchased items` section with a clear undo purchase action and a short removal animation for active rows.
+- Add meal outcome snapshots with `cooked`, `skipped` and `postponed` states.
+- Deduct pantry stock only for confirmed cooked meals and record the exact deducted quantities for reliable undo.
+- Add pantry quantity adjustment actions for corrections and expose recent cooked-meal deductions on the pantry page.
+
+TDD focus:
+
+- Purchased planned lines survive planner resync and remain reversible.
+- Purchased rows render separately behind a reveal control.
+- Confirming a cooked meal deducts available pantry quantities only.
+- Undoing a cooked meal restores exactly the deducted stock.
+- Skipped and postponed outcomes never consume stock.
+- One user cannot change another user's meal outcome or pantry stock.
+- Pantry quantities can be adjusted manually after a mistake.
+
 ### Phase 6: Dashboard and Insight Refinement
 
 Goal: close the feedback loop with useful weekly summaries.

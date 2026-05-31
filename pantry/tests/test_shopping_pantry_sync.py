@@ -67,3 +67,42 @@ def test_updating_purchased_item_resyncs_pantry_without_duplication(client, djan
     assert response.status_code == 302
     assert pantry_item.quantity == Decimal("3.00")
     assert item.pantry_synced_quantity == Decimal("3.00")
+
+
+@pytest.mark.django_db
+def test_user_can_manually_adjust_pantry_quantity(client, django_user_model):
+    user = django_user_model.objects.create_user(username="pantry-adjust", password="test-pass-123")
+    item = PantryItem.objects.create(owner=user, name="Rice", quantity="2", unit="kg")
+    client.force_login(user)
+
+    response = client.post(
+        reverse("pantry_update", kwargs={"pk": item.pk}),
+        {
+            "name": "Rice",
+            "quantity": "1.25",
+            "unit": "kg",
+        },
+    )
+
+    item.refresh_from_db()
+    assert response.status_code == 302
+    assert item.quantity == Decimal("1.25")
+
+
+@pytest.mark.django_db
+def test_user_cannot_adjust_another_users_pantry_item(client, django_user_model):
+    owner = django_user_model.objects.create_user(username="pantry-owner", password="test-pass-123")
+    other_user = django_user_model.objects.create_user(username="pantry-other", password="test-pass-123")
+    item = PantryItem.objects.create(owner=owner, name="Rice", quantity="2", unit="kg")
+    client.force_login(other_user)
+
+    response = client.post(
+        reverse("pantry_update", kwargs={"pk": item.pk}),
+        {
+            "name": "Rice",
+            "quantity": "1",
+            "unit": "kg",
+        },
+    )
+
+    assert response.status_code == 404

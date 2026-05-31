@@ -12,6 +12,8 @@ from shopping.services import sync_planned_shopping_items
 
 from .forms import PlannedMealForm
 from .models import PlannedMeal
+from .selectors import is_planned_meal_due
+from .services import set_meal_outcome
 
 
 def monday_for(value):
@@ -46,10 +48,20 @@ def planner(request):
     requested_day = parse_date(request.GET.get("day", ""))
     today = date.today()
     selected_day = requested_day if requested_day in days else today if today in days else week_start
-    meals = PlannedMeal.objects.filter(owner=request.user, date__range=(days[0], days[-1])).select_related("recipe")
+    meals = list(
+        PlannedMeal.objects.filter(owner=request.user, date__range=(days[0], days[-1])).select_related(
+            "recipe",
+            "consumption",
+        )
+    )
     recipes = Recipe.objects.filter(owner=request.user).prefetch_related("components")
     meals_by_day = {day: {choice.value: [] for choice in PlannedMeal.MealType} for day in days}
+    due_pending_meals = []
     for meal in meals:
+        meal.consumption_record = getattr(meal, "consumption", None)
+        meal.is_due = meal.consumption_record is None and is_planned_meal_due(meal)
+        if meal.is_due:
+            due_pending_meals.append(meal)
         meals_by_day[meal.date][meal.meal_type].append(meal)
     week_rows = [
         {
@@ -77,6 +89,7 @@ def planner(request):
             "meal_types": PlannedMeal.MealType,
             "recipes": recipes,
             "form": PlannedMealForm(owner=request.user),
+            "due_pending_meals": due_pending_meals,
         },
     )
 
@@ -111,4 +124,23 @@ def planner_delete(request, pk):
     if request.method == "POST":
         meal.delete()
         sync_planned_shopping_items(request.user)
+    return redirect(safe_next_url(request) or "planner")
+
+
+@login_required
+def planner_outcome(request, pk):
+    meal = get_object_or_404(PlannedMeal, pk=pk, owner=request.user)
+    if request.method == "POST":
+        action = request.POST.get("action", "")
+        try:
+            set_meal_outcome(meal, action)
+        except ValueError:
+            messages.error(request, "Choose a valid meal outcome.")
+        else:
+            if action == "cooked":
+                messages.success(request, "Meal marked as cooked. Pantry stock updated.")
+            elif action == "undo":
+                messages.success(request, "Meal confirmation undone. Pantry stock restored.")
+            else:
+                messages.info(request, f"Meal marked as {action}. Pantry stock was not changed.")
     return redirect(safe_next_url(request) or "planner")

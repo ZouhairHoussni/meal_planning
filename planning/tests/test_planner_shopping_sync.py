@@ -148,6 +148,73 @@ def test_manual_shopping_item_is_kept_when_planned_items_sync(client, django_use
 
 
 @pytest.mark.django_db
+def test_purchased_planned_item_is_preserved_when_plan_is_removed(client, django_user_model):
+    user = django_user_model.objects.create_user(username="purchased-history", password="test-pass-123")
+    recipe = Recipe.objects.create(owner=user, name="Soup")
+    RecipeComponent.objects.create(recipe=recipe, name="Carrots", quantity="300", unit="g")
+    meal = PlannedMeal.objects.create(
+        owner=user,
+        recipe=recipe,
+        date="2026-05-25",
+        meal_type=PlannedMeal.MealType.DINNER,
+    )
+    purchased_item = ShoppingItem.objects.create(
+        owner=user,
+        name="Carrots",
+        quantity="300",
+        unit="g",
+        source=ShoppingItem.Source.PLANNED,
+        purchased=True,
+    )
+    client.force_login(user)
+
+    response = client.post(reverse("planner_delete", kwargs={"pk": meal.pk}))
+
+    assert response.status_code == 302
+    purchased_item.refresh_from_db()
+    assert purchased_item.purchased is True
+    assert purchased_item.quantity == 300
+
+
+@pytest.mark.django_db
+def test_planner_refresh_creates_new_pending_line_instead_of_rewriting_purchased_history(client, django_user_model):
+    user = django_user_model.objects.create_user(username="preserve-purchased-quantity", password="test-pass-123")
+    recipe = Recipe.objects.create(owner=user, name="Soup")
+    RecipeComponent.objects.create(recipe=recipe, name="Carrots", quantity="600", unit="g")
+    ShoppingItem.objects.create(
+        owner=user,
+        name="Carrots",
+        quantity="300",
+        unit="g",
+        source=ShoppingItem.Source.PLANNED,
+        purchased=True,
+    )
+    client.force_login(user)
+
+    client.post(
+        reverse("planner_add"),
+        {
+            "recipe": recipe.id,
+            "date": "2026-05-25",
+            "meal_type": PlannedMeal.MealType.DINNER,
+        },
+    )
+
+    assert ShoppingItem.objects.filter(
+        owner=user,
+        name="Carrots",
+        quantity="300",
+        purchased=True,
+    ).exists()
+    assert ShoppingItem.objects.filter(
+        owner=user,
+        name="Carrots",
+        quantity="600",
+        purchased=False,
+    ).exists()
+
+
+@pytest.mark.django_db
 def test_user_can_add_manual_grocery_item(client, django_user_model):
     user = django_user_model.objects.create_user(username="manual-shopper", password="test-pass-123")
     client.force_login(user)

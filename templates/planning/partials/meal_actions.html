@@ -1,0 +1,15 @@
+<div class="flex flex-wrap gap-2">
+  {% if meal.consumption_record %}
+    <form method="post" action="{% url 'planner_outcome' meal.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="undo">
+      <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
+      <button class="btn-secondary min-h-11 px-3 py-1 text-xs" type="submit">Undo {{ meal.consumption_record.get_status_display|lower }}</button>
+    </form>
+  {% endif %}
+  <form method="post" action="{% url 'planner_delete' meal.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
+    <button class="btn-danger min-h-11 px-3 py-1 text-xs" type="submit">Remove</button>
+  </form>
+</div>

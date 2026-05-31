@@ -32,6 +32,48 @@
     {% endfor %}
   </nav>
 
+  {% if due_pending_meals %}
+    <section class="meal-confirmation-panel mt-5">
+      <div>
+        <p class="eyebrow">Kitchen check-in</p>
+        <h2 class="section-title mt-1">Was this meal cooked?</h2>
+        <p class="mt-2 text-sm text-text-muted">Confirm only after serving the meal. Pantry ingredients are deducted when you choose cooked.</p>
+      </div>
+      <div class="mt-4 space-y-3">
+        {% for meal in due_pending_meals %}
+          <article class="rounded-lg border border-border bg-white/90 p-3">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="font-black text-text">{{ meal.recipe.name }}</p>
+                <p class="mt-1 text-sm text-text-muted">{{ meal.date|date:"D j M" }} - {{ meal.get_meal_type_display }}</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <form method="post" action="{% url 'planner_outcome' meal.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="cooked">
+                  <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ selected_day|date:'Y-m-d' }}">
+                  <button class="btn-primary min-h-11 px-3 py-1 text-xs" type="submit">Yes, cooked</button>
+                </form>
+                <form method="post" action="{% url 'planner_outcome' meal.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="skipped">
+                  <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ selected_day|date:'Y-m-d' }}">
+                  <button class="btn-secondary min-h-11 px-3 py-1 text-xs" type="submit">Skipped</button>
+                </form>
+                <form method="post" action="{% url 'planner_outcome' meal.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="postponed">
+                  <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ selected_day|date:'Y-m-d' }}">
+                  <button class="btn-secondary min-h-11 px-3 py-1 text-xs" type="submit">Postpone</button>
+                </form>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
   <div class="mt-5 grid gap-5 xl:grid-cols-[1fr_300px] xl:items-start">
     <section class="min-w-0">
       <div class="md:hidden">
@@ -79,12 +121,9 @@
                         <div class="min-w-0">
                           <p class="truncate text-base font-black text-text">{{ meal.recipe.name }}</p>
                           {% if meal.note %}<p class="mt-1 text-sm text-text-muted">{{ meal.note }}</p>{% endif %}
+                          {% if meal.consumption_record %}<span class="meal-status-chip mt-2">{{ meal.consumption_record.get_status_display }}</span>{% endif %}
                         </div>
-                        <form method="post" action="{% url 'planner_delete' meal.id %}">
-                          {% csrf_token %}
-                          <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
-                          <button class="btn-danger min-h-11 px-3 py-1 text-xs" type="submit">Remove</button>
-                        </form>
+                        {% include "planning/partials/meal_actions.html" with meal=meal day=day %}
                       </article>
                     {% empty %}
                       <p class="planner-empty-slot">No meal yet</p>
@@ -135,12 +174,11 @@
                   <div class="mt-2 space-y-2">
                     {% for meal in slot.meals %}
                       <article class="planner-meal-card planner-meal-card-compact">
-                        <p class="min-w-0 truncate text-sm font-black text-text">{{ meal.recipe.name }}</p>
-                        <form method="post" action="{% url 'planner_delete' meal.id %}">
-                          {% csrf_token %}
-                          <input type="hidden" name="next" value="{% url 'planner' %}?week={{ week_start|date:'Y-m-d' }}&day={{ day.date|date:'Y-m-d' }}">
-                          <button class="btn-danger min-h-11 px-2 py-1 text-xs" type="submit">Remove</button>
-                        </form>
+                        <div class="min-w-0">
+                          <p class="truncate text-sm font-black text-text">{{ meal.recipe.name }}</p>
+                          {% if meal.consumption_record %}<span class="meal-status-chip mt-2">{{ meal.consumption_record.get_status_display }}</span>{% endif %}
+                        </div>
+                        {% include "planning/partials/meal_actions.html" with meal=meal day=day %}
                       </article>
                     {% empty %}
                       <p class="planner-empty-slot">Open</p>

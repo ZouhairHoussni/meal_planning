@@ -389,6 +389,29 @@ input[type="checkbox"] {
   padding: 1rem;
 }
 
+.meal-confirmation-panel {
+  border: 1px solid rgba(244, 183, 64, 0.65);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(135deg, rgba(255, 249, 236, 0.98), rgba(255, 241, 194, 0.72)),
+    var(--color-cream);
+  padding: 1rem;
+  box-shadow: var(--shadow-lift);
+}
+
+.meal-status-chip {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--color-success-soft);
+  padding: 0.2rem 0.65rem;
+  color: var(--color-success);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 @media (min-width: 640px) {
   .planner-header {
     padding: 1.25rem;
@@ -624,11 +647,62 @@ input[type="checkbox"] {
   background: rgba(255, 255, 255, 0.94);
   padding: 1rem;
   box-shadow: var(--shadow-soft);
+  transition:
+    max-height 240ms ease,
+    margin 240ms ease,
+    opacity 180ms ease,
+    padding 240ms ease,
+    transform 180ms ease;
 }
 
 .shopping-item-done {
-  background: rgba(220, 252, 231, 0.78);
+  border-color: rgba(148, 163, 184, 0.38);
+  background: rgba(241, 245, 249, 0.9);
   box-shadow: none;
+  opacity: 0.82;
+}
+
+.shopping-item-leaving {
+  max-height: 0;
+  margin-block: 0;
+  overflow: hidden;
+  padding-block: 0;
+  opacity: 0;
+  transform: translateX(1rem);
+}
+
+.shopping-purchased-toggle {
+  display: flex;
+  min-height: 4.5rem;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid rgba(216, 226, 243, 0.95);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, 0.88);
+  padding: 0.9rem 1rem;
+  box-shadow: var(--shadow-lift);
+}
+
+.shopping-purchased-toggle:hover {
+  border-color: var(--color-primary);
+}
+
+.shopping-purchased-panel-open {
+  animation: shopping-panel-enter 180ms ease-out;
+}
+
+@keyframes shopping-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.4rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .shopping-check {

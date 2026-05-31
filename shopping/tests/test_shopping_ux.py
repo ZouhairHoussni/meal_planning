@@ -22,5 +22,9 @@ def test_shopping_page_uses_phone_first_shop_mode_sections(client, django_user_m
     assert "hidden md:block" in content
     assert "Still to buy" in content
     assert "Already in pantry" in content
+    assert "Show purchased items" in content
+    assert 'data-shopping-purchased-toggle' in content
+    assert 'data-shopping-purchased-panel' in content
+    assert 'aria-label="Move Bread back to shopping list"' in content
     assert "Edit item details" in content
     assert "aria-label=\"Mark Milk as bought\"" in content

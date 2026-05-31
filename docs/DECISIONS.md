@@ -223,6 +223,16 @@ Decision: grocery generation records pantry coverage as a snapshot only. Plannin
 
 Reason: this avoids surprising inventory changes and matches the master spec.
 
+Update on 2026-05-31: an explicit user request moves confirmed meal consumption into the active slice. Planning still does not consume pantry stock. A planned meal may deduct stock only after the user marks it as cooked. The application records the quantities actually deducted so the action can be undone exactly. Skipped and postponed outcomes do not deduct stock. Manual pantry quantity adjustment remains available for real-world corrections.
+
+### Purchased shopping-line preservation
+
+Decision: purchased shopping lines are recoverable purchase history and must not be silently deleted or rewritten when planned meals change.
+
+Reason: shopping records describe groceries that entered the home. Planner refresh may create a new pending line for a continuing need, but it must preserve already purchased lines so pantry sync and undo remain trustworthy.
+
+Impact: the current compact shopping model still does not replace the future immutable grocery-list snapshot design, but it now protects completed line-level purchase truth.
+
 ### Dynamic recipe ingredient rows
 
 Proposed: start with Django formsets and progressive vanilla JavaScript cloning. Keep a full-page non-modal fallback.

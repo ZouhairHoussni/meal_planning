@@ -117,22 +117,39 @@
     </section>
 
     <section class="mt-8 pb-8">
-      <div class="flex items-end justify-between gap-4">
-        <div>
-          <p class="eyebrow text-success">Already in pantry</p>
-          <h2 class="section-title mt-1">{{ purchased_items|length }} item{{ purchased_items|length|pluralize }}</h2>
-        </div>
-      </div>
+      <button
+        class="shopping-purchased-toggle"
+        type="button"
+        data-shopping-purchased-toggle
+        aria-expanded="false"
+        aria-controls="shopping-purchased-panel"
+      >
+        <span class="min-w-0 text-left">
+          <span class="block text-sm font-black text-primary" data-shopping-purchased-label>Show purchased items</span>
+          <span class="mt-1 block text-sm text-text-muted">{{ purchased_items|length }} item{{ purchased_items|length|pluralize }} already moved into pantry</span>
+        </span>
+        <span class="mini-chip shrink-0">{{ purchased_items|length }}</span>
+      </button>
 
-      <div class="mt-4 space-y-3">
-        {% for item in purchased_items %}
-          {% include "shopping/partials/shopping_item_card.html" with item=item is_done=True %}
-        {% empty %}
-          <div class="shopping-empty">
-            <h3 class="text-xl font-black text-text">Nothing bought yet</h3>
-            <p class="mt-2 text-sm text-text-muted">Tap a grocery when it lands in the basket.</p>
+      <div class="shopping-purchased-panel hidden" id="shopping-purchased-panel" data-shopping-purchased-panel>
+        <div class="mt-5 flex items-end justify-between gap-4">
+          <div>
+            <p class="eyebrow text-success">Already in pantry</p>
+            <h2 class="section-title mt-1">Purchased items</h2>
           </div>
-        {% endfor %}
+          <p class="hidden text-sm text-text-muted sm:block">Undo any item to move it back to the active list.</p>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          {% for item in purchased_items %}
+            {% include "shopping/partials/shopping_item_card.html" with item=item is_done=True %}
+          {% empty %}
+            <div class="shopping-empty">
+              <h3 class="text-xl font-black text-text">Nothing bought yet</h3>
+              <p class="mt-2 text-sm text-text-muted">Tap a grocery when it lands in the basket.</p>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </section>
   </div>

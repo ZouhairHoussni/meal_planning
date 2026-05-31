@@ -16,6 +16,22 @@
           <p class="eyebrow">In stock</p>
           <h2 class="mt-2 text-xl font-black text-text">{{ item.name }}</h2>
           <p class="mt-3 inline-flex rounded-full bg-primary-soft px-3 py-1 text-sm font-black text-primary">{{ item.quantity|floatformat:"-2" }} {{ item.unit }}</p>
+          <details class="mt-4">
+            <summary class="btn-secondary inline-flex cursor-pointer text-sm">Adjust stock</summary>
+            <form class="mt-3 space-y-3 rounded-lg border border-border bg-surface-muted/60 p-3" method="post" action="{% url 'pantry_update' item.id %}">
+              {% csrf_token %}
+              <input class="input" name="name" value="{{ item.name }}" aria-label="Pantry item name" required>
+              <div class="grid grid-cols-[1fr_110px] gap-3">
+                <input class="input" name="quantity" value="{{ item.quantity|floatformat:'-2' }}" inputmode="decimal" aria-label="Pantry quantity" required>
+                <select class="select" name="unit" aria-label="Pantry unit">
+                  {% for value, label in form.unit.field.choices %}
+                    <option value="{{ value }}" {% if item.unit == value %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button class="btn-secondary w-full" type="submit">Save quantity</button>
+            </form>
+          </details>
         </article>
       {% empty %}
         <div class="empty-state sm:col-span-2 xl:col-span-3">
@@ -42,5 +58,43 @@
         <button class="btn-primary w-full" type="submit">Add pantry item</button>
       </div>
     </form>
+  </section>
+
+  <section class="mt-6 pb-6">
+    <p class="eyebrow">Recent meal use</p>
+    <h2 class="section-title mt-1">Pantry activity</h2>
+    <p class="mt-2 max-w-2xl text-sm text-text-muted">Cooked meals appear here with the stock that was removed. Undo a confirmation if the meal was recorded by mistake.</p>
+
+    <div class="mt-4 grid gap-3 lg:grid-cols-2">
+      {% for consumption in recent_consumptions %}
+        <article class="app-card">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-black text-text">{{ consumption.planned_meal.recipe.name }}</h3>
+              <p class="mt-1 text-sm text-text-muted">{{ consumption.planned_meal.date|date:"D j M" }} - {{ consumption.planned_meal.get_meal_type_display }}</p>
+            </div>
+            <span class="meal-status-chip">Cooked</span>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            {% for entry in consumption.entries.all %}
+              <span class="shopping-chip bg-[#EAF3FF] text-[#1A4F7A]">{{ entry.quantity|floatformat:"-2" }} {{ entry.unit }} {{ entry.name }}</span>
+            {% empty %}
+              <span class="text-sm text-text-muted">No matching pantry stock was removed.</span>
+            {% endfor %}
+          </div>
+          <form class="mt-4" method="post" action="{% url 'planner_outcome' consumption.planned_meal.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="undo">
+            <input type="hidden" name="next" value="{% url 'pantry' %}">
+            <button class="btn-secondary w-full" type="submit">Undo pantry use</button>
+          </form>
+        </article>
+      {% empty %}
+        <div class="empty-state lg:col-span-2">
+          <h3 class="text-lg font-black text-text">No cooked meals recorded yet</h3>
+          <p class="mt-2 text-sm text-text-muted">Plan meals normally. Pantry stock changes only after you confirm a meal was cooked.</p>
+        </div>
+      {% endfor %}
+    </div>
   </section>
 {% endblock %}
